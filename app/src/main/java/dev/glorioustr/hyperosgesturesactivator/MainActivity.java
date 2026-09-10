@@ -168,6 +168,10 @@ public final class MainActivity extends Activity {
         ImageView logo = new ImageView(this);
         logo.setImageResource(R.drawable.ic_launcher_foreground);
         logo.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        logo.setBackground(rounded(Color.rgb(2, 4, 17), 9,
+                aeroGlass ? Color.argb(150, 92, 158, 255) : Color.TRANSPARENT,
+                aeroGlass ? 1 : 0));
+        logo.setClipToOutline(true);
         brand.addView(logo, new LinearLayout.LayoutParams(dp(36), dp(36)));
 
         LinearLayout titles = new LinearLayout(this);
@@ -243,7 +247,7 @@ public final class MainActivity extends Activity {
         TextView safety = text(
                 getString(R.string.safety_hint),
                 11,
-                Color.rgb(84, 101, 91),
+                secondaryTextColor(),
                 Typeface.NORMAL);
         safety.setGravity(Gravity.CENTER);
         safety.setPadding(0, dp(12), 0, 0);

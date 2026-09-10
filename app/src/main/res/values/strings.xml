@@ -17,7 +17,7 @@
     <string name="appearance_title">Appearance</string>
     <string name="appearance_subtitle">Choose the visual style used across the control center</string>
     <string name="style_default_title">Default</string>
-    <string name="style_default_desc">Clean Material surfaces with a bright, neutral background</string>
+    <string name="style_default_desc">Clean Material surfaces with solid, balanced colors</string>
     <string name="style_aero_glass_title">Aero Glass</string>
     <string name="style_aero_glass_desc">Layered blue-purple glass surfaces with luminous edges</string>
     <string name="section_system_health">System health</string>

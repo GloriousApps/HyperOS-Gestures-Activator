@@ -14,7 +14,7 @@
     <string name="appearance_title">Görünüm</string>
     <string name="appearance_subtitle">Kontrol merkezinde kullanılacak görsel stili seç</string>
     <string name="style_default_title">Varsayılan</string>
-    <string name="style_default_desc">Aydınlık ve nötr arka planlı sade Material yüzeyler</string>
+    <string name="style_default_desc">Düz ve dengeli renklerle sade Material yüzeyler</string>
     <string name="style_aero_glass_title">Aero Glass</string>
     <string name="style_aero_glass_desc">Işıltılı kenarlara sahip katmanlı mavi-mor cam yüzeyler</string>
     <string name="section_system_health">Sistem sağlığı</string>
