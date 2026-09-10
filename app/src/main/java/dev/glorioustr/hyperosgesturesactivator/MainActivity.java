@@ -38,8 +38,13 @@ public final class MainActivity extends Activity {
     private static final long STATUS_REFRESH_INTERVAL_MS = 1000L;
     private static final String UI_PREFERENCES = "ui_preferences";
     private static final String KEY_CONTENT_STYLE = "content_style";
+    private static final String KEY_COLOR_MODE = "color_mode";
     private static final String STYLE_DEFAULT = "DEFAULT";
     private static final String STYLE_AERO_GLASS = "AERO_GLASS";
+    private static final String COLOR_SYSTEM = "SYSTEM";
+    private static final String COLOR_AMOLED = "AMOLED";
+    private static final String COLOR_LIGHT = "LIGHT";
+    private static final String COLOR_DARK = "DARK";
 
     private final Handler statusHandler = new Handler(Looper.getMainLooper());
     private final Runnable statusRefresh = new Runnable() {
@@ -62,6 +67,8 @@ public final class MainActivity extends Activity {
     private TextView defaultHomeView;
     private boolean aeroGlass;
     private boolean darkMode;
+    private boolean amoledMode;
+    private String colorMode;
     private boolean healthExpanded;
     private boolean gesturesExpanded;
 
@@ -69,10 +76,15 @@ public final class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = DiagnosticDatabase.get(this);
-        darkMode = (getResources().getConfiguration().uiMode
+        SharedPreferences preferences = getSharedPreferences(UI_PREFERENCES, MODE_PRIVATE);
+        colorMode = preferences.getString(KEY_COLOR_MODE, COLOR_SYSTEM);
+        boolean systemDark = (getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        aeroGlass = STYLE_AERO_GLASS.equals(getSharedPreferences(
-                UI_PREFERENCES, MODE_PRIVATE).getString(KEY_CONTENT_STYLE, STYLE_DEFAULT));
+        darkMode = COLOR_AMOLED.equals(colorMode) || COLOR_DARK.equals(colorMode)
+                || (COLOR_SYSTEM.equals(colorMode) && systemDark);
+        amoledMode = COLOR_AMOLED.equals(colorMode);
+        aeroGlass = STYLE_AERO_GLASS.equals(preferences.getString(
+                KEY_CONTENT_STYLE, STYLE_DEFAULT));
         applySystemChrome();
         setTitle(R.string.app_name);
         setContentView(buildScreen());
@@ -246,33 +258,34 @@ public final class MainActivity extends Activity {
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         statusCard.addView(facts, matchWrap());
 
-        statusBadge = text(getString(R.string.status_label), 11,
-                Color.rgb(35, 85, 62), Typeface.BOLD);
-        statusBadge.setLetterSpacing(0.12f);
-        statusBadge.setGravity(Gravity.START);
-        statusBadge.setPadding(0, dp(2), 0, 0);
-        statusCard.addView(statusBadge, matchWrap());
+        LinearLayout navigationRow = new LinearLayout(this);
+        navigationRow.setOrientation(LinearLayout.HORIZONTAL);
+        navigationRow.setGravity(Gravity.CENTER_VERTICAL);
+        statusTitle = text(getString(R.string.gesture_navigation_label), 19,
+                primaryTextColor(), Typeface.BOLD);
+        navigationRow.addView(statusTitle, new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        statusTitle = text(getString(R.string.status_checking_title), 26,
-                Color.rgb(18, 46, 32), Typeface.BOLD);
-        statusTitle.setPadding(0, dp(8), 0, 0);
-        statusTitle.setGravity(Gravity.START);
-        statusCard.addView(statusTitle, matchWrap());
+        statusBadge = text("", 1, Color.TRANSPARENT, Typeface.NORMAL);
+        statusBadge.setVisibility(View.GONE);
+
+        primaryButton = new Button(this);
+        primaryButton.setAllCaps(false);
+        primaryButton.setTextSize(13);
+        primaryButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        primaryButton.setMinHeight(dp(42));
+        primaryButton.setPadding(dp(16), 0, dp(16), 0);
+        primaryButton.setOnClickListener(view ->
+                setGestureActivation(!GestureActivation.isEnabled(this)));
+        navigationRow.addView(primaryButton, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, dp(44)));
+        statusCard.addView(navigationRow, matchWrap());
 
         statusDetail = text(getString(R.string.status_checking_desc), 14,
                 Color.rgb(62, 82, 70), Typeface.NORMAL);
         statusDetail.setPadding(0, dp(6), 0, dp(18));
         statusDetail.setGravity(Gravity.START);
         statusCard.addView(statusDetail, matchWrap());
-
-        primaryButton = new Button(this);
-        primaryButton.setAllCaps(false);
-        primaryButton.setTextSize(15);
-        primaryButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        primaryButton.setMinHeight(dp(52));
-        primaryButton.setOnClickListener(view ->
-                setGestureActivation(!GestureActivation.isEnabled(this)));
-        statusCard.addView(primaryButton, matchWrap());
 
         LinearLayout managers = new LinearLayout(this);
         managers.setOrientation(LinearLayout.HORIZONTAL);
@@ -315,25 +328,19 @@ public final class MainActivity extends Activity {
                 : R.string.section_gestures_collapsed_desc), 12,
                 secondaryTextColor(), Typeface.NORMAL), matchWrap());
         header.addView(copy, copyParams);
-        TextView arrow = text("⌄", 25, secondaryTextColor(), Typeface.BOLD);
+        TextView arrow = text("›", 25, secondaryTextColor(), Typeface.BOLD);
         arrow.setGravity(Gravity.CENTER);
         header.addView(arrow, new LinearLayout.LayoutParams(dp(42), dp(48)));
         card.addView(header, matchWrap());
 
-        View content = health ? buildHealthCard() : buildGestureCard();
-        boolean expanded = health ? healthExpanded : gesturesExpanded;
-        content.setVisibility(expanded ? View.VISIBLE : View.GONE);
-        arrow.setText(expanded ? "⌃" : "⌄");
-        View.OnClickListener toggle = view -> {
-            if (health) healthExpanded = !healthExpanded;
-            else gesturesExpanded = !gesturesExpanded;
-            boolean nowExpanded = health ? healthExpanded : gesturesExpanded;
-            content.setVisibility(nowExpanded ? View.VISIBLE : View.GONE);
-            arrow.setText(nowExpanded ? "⌃" : "⌄");
-        };
+        View.OnClickListener open = view -> startActivity(
+                StatusDetailActivity.intent(this, health));
         header.setClickable(true);
         header.setFocusable(true);
-        header.setOnClickListener(toggle);
+        header.setOnClickListener(open);
+        card.setClickable(true);
+        card.setFocusable(true);
+        card.setOnClickListener(open);
         return card;
     }
 
@@ -354,7 +361,9 @@ public final class MainActivity extends Activity {
         button.setTextColor(primaryTextColor());
         button.setMinHeight(dp(44));
         button.setPadding(dp(6), 0, dp(6), 0);
-        button.setBackground(surfaceDrawable(18));
+        button.setBackground(aeroGlass ? surfaceDrawable(18)
+                : rounded(darkMode ? Color.rgb(69, 68, 78) : Color.WHITE, 18,
+                        darkMode ? Color.rgb(129, 137, 158) : Color.rgb(202, 210, 224), 1));
         button.setOnClickListener(listener);
         return button;
     }
@@ -656,18 +665,40 @@ public final class MainActivity extends Activity {
         subtitle.setPadding(0, dp(4), 0, dp(16));
         panel.addView(subtitle, matchWrap());
 
-        addThemeChoice(panel, dialog, false,
-                getString(R.string.style_default_title),
-                getString(R.string.style_default_desc));
-        addThemeChoice(panel, dialog, true,
-                getString(R.string.style_aero_glass_title),
-                getString(R.string.style_aero_glass_desc));
+        panel.addView(text(getString(R.string.color_mode_title), 17,
+                primaryTextColor(), Typeface.BOLD), matchWrap());
+        panel.addView(space(10));
+        addColorChoiceRow(panel, dialog, COLOR_SYSTEM, R.string.color_system_title,
+                R.string.color_system_desc, COLOR_AMOLED, R.string.color_amoled_title,
+                R.string.color_amoled_desc);
+        addColorChoiceRow(panel, dialog, COLOR_LIGHT, R.string.color_light_title,
+                R.string.color_light_desc, COLOR_DARK, R.string.color_dark_title,
+                R.string.color_dark_desc);
+
+        TextView contentTitle = text(getString(R.string.content_style_title), 17,
+                primaryTextColor(), Typeface.BOLD);
+        contentTitle.setPadding(0, dp(8), 0, dp(10));
+        panel.addView(contentTitle, matchWrap());
+        LinearLayout contentChoices = new LinearLayout(this);
+        contentChoices.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams defaultParams = new LinearLayout.LayoutParams(0, dp(166), 1f);
+        defaultParams.setMarginEnd(dp(5));
+        contentChoices.addView(buildContentStyleChoice(dialog, false,
+                R.string.style_default_title, R.string.style_default_desc), defaultParams);
+        LinearLayout.LayoutParams aeroParams = new LinearLayout.LayoutParams(0, dp(166), 1f);
+        aeroParams.setMarginStart(dp(5));
+        contentChoices.addView(buildContentStyleChoice(dialog, true,
+                R.string.style_aero_glass_title, R.string.style_aero_glass_desc), aeroParams);
+        panel.addView(contentChoices, matchWrap());
 
         FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 Gravity.TOP);
-        overlay.addView(panel, panelParams);
+        ScrollView panelScroll = new ScrollView(this);
+        panelScroll.setFillViewport(true);
+        panelScroll.addView(panel, matchWrap());
+        overlay.addView(panelScroll, panelParams);
         dialog.setContentView(overlay);
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -682,6 +713,138 @@ public final class MainActivity extends Activity {
             window.setAttributes(attributes);
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         }
+    }
+
+    private View buildContentStyleChoice(Dialog dialog, boolean aero,
+            int titleId, int detailId) {
+        boolean selected = aeroGlass == aero;
+        LinearLayout choice = new LinearLayout(this);
+        choice.setOrientation(LinearLayout.VERTICAL);
+        choice.setPadding(dp(12), dp(12), dp(12), dp(10));
+        int selectedBorder = aero ? Color.rgb(174, 210, 255) : Color.rgb(115, 83, 222);
+        choice.setBackground(aero
+                ? gradient(new int[]{Color.rgb(8, 37, 55), Color.rgb(25, 76, 108),
+                        Color.rgb(74, 42, 91)}, 18,
+                        selected ? selectedBorder : Color.rgb(91, 101, 123), selected ? 3 : 1)
+                : rounded(darkMode ? Color.rgb(48, 55, 70) : Color.rgb(249, 247, 252),
+                        18, selected ? selectedBorder : Color.rgb(91, 101, 123), selected ? 3 : 1));
+
+        LinearLayout preview = new LinearLayout(this);
+        preview.setOrientation(LinearLayout.VERTICAL);
+        preview.setPadding(dp(9), dp(9), dp(9), dp(9));
+        preview.setBackground(aero
+                ? gradient(new int[]{Color.rgb(22, 70, 92), Color.rgb(72, 53, 91)},
+                        12, Color.argb(170, 210, 230, 255), 1)
+                : rounded(darkMode ? Color.rgb(58, 66, 84) : Color.WHITE,
+                        12, Color.argb(120, 176, 190, 213), 1));
+        View lineOne = new View(this);
+        lineOne.setBackground(rounded(aero ? Color.rgb(83, 184, 255)
+                : Color.rgb(111, 82, 211), 5, Color.TRANSPARENT, 0));
+        preview.addView(lineOne, new LinearLayout.LayoutParams(dp(54), dp(7)));
+        View lineTwo = new View(this);
+        lineTwo.setBackground(rounded(aero ? Color.rgb(235, 108, 190)
+                : Color.rgb(24, 184, 195), 5, Color.TRANSPARENT, 0));
+        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(dp(38), dp(6));
+        lineParams.topMargin = dp(7);
+        preview.addView(lineTwo, lineParams);
+        choice.addView(preview, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(58)));
+
+        int primary = aero || darkMode ? Color.WHITE : Color.rgb(35, 40, 53);
+        int secondary = aero || darkMode ? Color.rgb(195, 204, 220) : Color.rgb(96, 103, 119);
+        TextView title = text(getString(titleId) + (selected ? "  ●" : ""), 14,
+                primary, Typeface.BOLD);
+        title.setPadding(0, dp(8), 0, 0);
+        choice.addView(title, matchWrap());
+        choice.addView(text(getString(detailId), 10, secondary, Typeface.NORMAL), matchWrap());
+        choice.setClickable(true);
+        choice.setFocusable(true);
+        choice.setOnClickListener(view -> {
+            dialog.dismiss();
+            selectContentStyle(aero);
+        });
+        return choice;
+    }
+
+    private void addColorChoiceRow(LinearLayout parent, Dialog dialog,
+            String leftMode, int leftTitle, int leftDetail,
+            String rightMode, int rightTitle, int rightDetail) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams left = new LinearLayout.LayoutParams(0, dp(126), 1f);
+        left.setMarginEnd(dp(5));
+        row.addView(buildColorChoice(dialog, leftMode, leftTitle, leftDetail), left);
+        LinearLayout.LayoutParams right = new LinearLayout.LayoutParams(0, dp(126), 1f);
+        right.setMarginStart(dp(5));
+        row.addView(buildColorChoice(dialog, rightMode, rightTitle, rightDetail), right);
+        LinearLayout.LayoutParams params = matchWrap();
+        params.bottomMargin = dp(10);
+        parent.addView(row, params);
+    }
+
+    private View buildColorChoice(Dialog dialog, String mode, int titleId, int detailId) {
+        boolean selected = mode.equals(colorMode);
+        boolean previewDark = COLOR_DARK.equals(mode) || COLOR_AMOLED.equals(mode);
+        int background = COLOR_AMOLED.equals(mode) ? Color.BLACK
+                : previewDark ? Color.rgb(29, 29, 35) : Color.rgb(249, 247, 252);
+        LinearLayout choice = new LinearLayout(this);
+        choice.setOrientation(LinearLayout.VERTICAL);
+        choice.setPadding(dp(12), dp(12), dp(12), dp(10));
+        choice.setClickable(true);
+        choice.setFocusable(true);
+        int border = selected ? Color.rgb(174, 210, 255) : Color.rgb(91, 101, 123);
+        choice.setBackground(rounded(background, 18, border, selected ? 3 : 1));
+
+        LinearLayout preview = new LinearLayout(this);
+        preview.setOrientation(LinearLayout.VERTICAL);
+        preview.setPadding(dp(8), dp(8), dp(8), dp(8));
+        if (COLOR_SYSTEM.equals(mode)) {
+            preview.setBackground(gradient(new int[]{Color.rgb(249, 247, 252),
+                    Color.rgb(249, 247, 252), Color.rgb(29, 29, 35)}, 12, Color.TRANSPARENT, 0));
+        } else {
+            preview.setBackground(rounded(background, 12, Color.TRANSPARENT, 0));
+        }
+        View first = new View(this);
+        first.setBackground(rounded(Color.rgb(122, 82, 224), 5, Color.TRANSPARENT, 0));
+        preview.addView(first, new LinearLayout.LayoutParams(dp(68), dp(7)));
+        View second = new View(this);
+        second.setBackground(rounded(Color.rgb(0, 188, 205), 5, Color.TRANSPARENT, 0));
+        LinearLayout.LayoutParams secondParams = new LinearLayout.LayoutParams(dp(48), dp(6));
+        secondParams.topMargin = dp(7);
+        preview.addView(second, secondParams);
+        choice.addView(preview, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(48)));
+
+        int primary = previewDark ? Color.WHITE : Color.rgb(35, 40, 53);
+        int secondary = previewDark ? Color.rgb(185, 188, 201) : Color.rgb(96, 103, 119);
+        TextView title = text(getString(titleId) + (selected ? "  ●" : ""), 14,
+                primary, Typeface.BOLD);
+        title.setPadding(0, dp(7), 0, 0);
+        choice.addView(title, matchWrap());
+        choice.addView(text(getString(detailId), 10, secondary, Typeface.NORMAL), matchWrap());
+        choice.setOnClickListener(view -> {
+            dialog.dismiss();
+            selectColorMode(mode, titleId);
+        });
+        return choice;
+    }
+
+    private void selectColorMode(String mode, int titleId) {
+        if (mode.equals(colorMode)) return;
+        colorMode = mode;
+        boolean systemDark = (getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        darkMode = COLOR_AMOLED.equals(mode) || COLOR_DARK.equals(mode)
+                || (COLOR_SYSTEM.equals(mode) && systemDark);
+        amoledMode = COLOR_AMOLED.equals(mode);
+        getSharedPreferences(UI_PREFERENCES, MODE_PRIVATE).edit()
+                .putString(KEY_COLOR_MODE, mode).apply();
+        applySystemChrome();
+        setContentView(buildScreen());
+        updateDashboard();
+        recordAppEvent(DiagnosticEvent.STATUS_SUCCESS, "ui", "color-mode-changed",
+                "mode=" + mode);
+        Toast.makeText(this, titleId, Toast.LENGTH_SHORT).show();
     }
 
     private void addThemeChoice(
@@ -799,7 +962,7 @@ public final class MainActivity extends Activity {
                     getString(R.string.status_permission_desc),
                     Color.rgb(255, 239, 237),
                     Color.rgb(145, 28, 28));
-            primaryButton.setText(R.string.action_check_permission);
+            primaryButton.setText(R.string.gesture_permission_button);
             primaryButton.setTextColor(Color.WHITE);
             primaryButton.setBackground(gradient(
                     new int[]{Color.rgb(174, 39, 39), Color.rgb(211, 66, 91)},
@@ -812,7 +975,7 @@ public final class MainActivity extends Activity {
                     getString(R.string.status_active_desc),
                     Color.rgb(232, 247, 239),
                     Color.rgb(20, 105, 60));
-            primaryButton.setText(R.string.action_safe_disable);
+            primaryButton.setText(R.string.gesture_on_button);
             primaryButton.setTextColor(darkMode ? Color.rgb(255, 220, 225)
                     : Color.rgb(136, 31, 31));
             primaryButton.setBackground(darkMode
@@ -828,7 +991,7 @@ public final class MainActivity extends Activity {
                     getString(R.string.status_starting_desc),
                     Color.rgb(255, 246, 226),
                     Color.rgb(137, 81, 0));
-            primaryButton.setText(R.string.action_safe_disable);
+            primaryButton.setText(R.string.gesture_on_button);
             primaryButton.setTextColor(darkMode ? Color.rgb(255, 224, 170)
                     : Color.rgb(120, 67, 0));
             primaryButton.setBackground(darkMode
@@ -844,7 +1007,7 @@ public final class MainActivity extends Activity {
                     getString(R.string.status_off_desc),
                     Color.WHITE,
                     Color.rgb(50, 61, 80));
-            primaryButton.setText(R.string.action_enable_gestures);
+            primaryButton.setText(R.string.gesture_off_button);
             primaryButton.setTextColor(Color.WHITE);
             primaryButton.setBackground(gradient(new int[]{
                     Color.rgb(52, 114, 214), Color.rgb(111, 75, 209), Color.rgb(219, 70, 150)},
@@ -861,9 +1024,11 @@ public final class MainActivity extends Activity {
                 getString(R.string.health_gesture_mode), enabled
                         ? getString(R.string.health_transitioning)
                         : getString(R.string.health_off));
-        defaultHomeView.setText(shortHome(resolveDefaultHome()));
-        defaultHomeView.setTextColor(darkMode
-                ? Color.rgb(215, 225, 241) : Color.rgb(62, 72, 90));
+        if (defaultHomeView != null) {
+            defaultHomeView.setText(shortHome(resolveDefaultHome()));
+            defaultHomeView.setTextColor(darkMode
+                    ? Color.rgb(215, 225, 241) : Color.rgb(62, 72, 90));
+        }
 
     }
 
@@ -893,8 +1058,8 @@ public final class MainActivity extends Activity {
         }
         statusBadge.setText(badge);
         statusBadge.setTextColor(darkMode ? lighten(accent, 0.38f) : accent);
-        statusTitle.setText(title);
-        statusTitle.setTextColor(darkMode ? Color.rgb(245, 247, 255) : accent);
+        statusTitle.setText(R.string.gesture_navigation_label);
+        statusTitle.setTextColor(primaryTextColor());
         statusDetail.setText(detail);
         statusDetail.setTextColor(darkMode
                 ? Color.rgb(205, 218, 236) : Color.rgb(71, 82, 75));
@@ -905,6 +1070,7 @@ public final class MainActivity extends Activity {
             boolean healthy,
             String healthyText,
             String waitingText) {
+        if (view == null) return;
         view.setText((healthy ? "● " : "○ ") + (healthy ? healthyText : waitingText));
         view.setTextColor(healthy
                 ? (darkMode ? Color.rgb(104, 232, 158) : Color.rgb(20, 112, 65))
@@ -1142,6 +1308,9 @@ public final class MainActivity extends Activity {
     }
 
     private GradientDrawable surfaceDrawable(int radius) {
+        if (amoledMode) {
+            return rounded(Color.rgb(7, 7, 9), radius, Color.rgb(54, 58, 70), 1);
+        }
         if (aeroGlass) {
             return darkMode
                     ? gradient(new int[]{
@@ -1184,7 +1353,9 @@ public final class MainActivity extends Activity {
 
     private void applySystemChrome() {
         int background;
-        if (darkMode) {
+        if (amoledMode) {
+            background = Color.BLACK;
+        } else if (darkMode) {
             background = aeroGlass ? Color.rgb(6, 17, 33) : Color.rgb(15, 14, 20);
         } else {
             background = aeroGlass ? Color.rgb(231, 246, 255) : Color.rgb(246, 248, 252);
@@ -1205,6 +1376,9 @@ public final class MainActivity extends Activity {
     }
 
     private GradientDrawable screenBackground() {
+        if (amoledMode) {
+            return rounded(Color.BLACK, 0, Color.TRANSPARENT, 0);
+        }
         if (aeroGlass) {
             return darkMode
                     ? gradient(new int[]{Color.rgb(6, 17, 33), Color.rgb(19, 37, 63),

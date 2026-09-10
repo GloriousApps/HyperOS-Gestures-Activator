@@ -35,6 +35,9 @@
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
+            android:name=".StatusDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

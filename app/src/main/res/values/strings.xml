@@ -16,6 +16,16 @@
     <string name="menu_close">Close</string>
     <string name="appearance_title">Appearance</string>
     <string name="appearance_subtitle">Choose the visual style used across the control center</string>
+    <string name="color_mode_title">Color mode</string>
+    <string name="content_style_title">Content design</string>
+    <string name="color_system_title">System default</string>
+    <string name="color_system_desc">Follows your phone’s light or dark appearance</string>
+    <string name="color_amoled_title">AMOLED</string>
+    <string name="color_amoled_desc">Dark appearance with a true black background</string>
+    <string name="color_light_title">Light Mode</string>
+    <string name="color_light_desc">Always uses a light appearance</string>
+    <string name="color_dark_title">Dark Mode</string>
+    <string name="color_dark_desc">Always uses a dark appearance</string>
     <string name="style_default_title">Default</string>
     <string name="style_default_desc">Clean Material surfaces with solid, balanced colors</string>
     <string name="style_aero_glass_title">Aero Glass</string>
@@ -126,4 +136,11 @@
     <string name="manager_unavailable">Manager application is unavailable</string>
     <string name="section_health_collapsed_desc">SystemUI, Xiaomi engine and navigation readiness</string>
     <string name="section_gestures_collapsed_desc">Back, Home, Recents and app switching</string>
+    <string name="gesture_navigation_label">Gesture navigation</string>
+    <string name="gesture_on_button">On</string>
+    <string name="gesture_off_button">Off</string>
+    <string name="gesture_permission_button">Permission</string>
+    <string name="health_page_desc">Live readiness of the components that provide native HyperOS navigation.</string>
+    <string name="gestures_page_desc">Gestures available through the active HyperOS system navigation pipeline.</string>
+    <string name="health_home_detected">Default launcher detected</string>
 </resources>

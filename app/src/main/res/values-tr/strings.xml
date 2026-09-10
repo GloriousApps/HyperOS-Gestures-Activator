@@ -13,6 +13,16 @@
     <string name="menu_close">Kapat</string>
     <string name="appearance_title">Görünüm</string>
     <string name="appearance_subtitle">Kontrol merkezinde kullanılacak görsel stili seç</string>
+    <string name="color_mode_title">Renk modu</string>
+    <string name="content_style_title">İçerik tasarımı</string>
+    <string name="color_system_title">Sistem varsayılanı</string>
+    <string name="color_system_desc">Telefonun açık veya koyu görünümünü takip eder</string>
+    <string name="color_amoled_title">AMOLED</string>
+    <string name="color_amoled_desc">Gerçek siyah arka planlı koyu görünüm</string>
+    <string name="color_light_title">Light Mode</string>
+    <string name="color_light_desc">Her zaman açık renkli görünüm</string>
+    <string name="color_dark_title">Dark Mode</string>
+    <string name="color_dark_desc">Her zaman koyu renkli görünüm</string>
     <string name="style_default_title">Varsayılan</string>
     <string name="style_default_desc">Düz ve dengeli renklerle sade Material yüzeyler</string>
     <string name="style_aero_glass_title">Aero Glass</string>
@@ -118,4 +128,11 @@
     <string name="manager_unavailable">Yönetici uygulaması kullanılamıyor</string>
     <string name="section_health_collapsed_desc">SystemUI, Xiaomi motoru ve gezinme durumu</string>
     <string name="section_gestures_collapsed_desc">Geri, Ana ekran, Son uygulamalar ve uygulama geçişi</string>
+    <string name="gesture_navigation_label">Hareketle gezinme</string>
+    <string name="gesture_on_button">Açık</string>
+    <string name="gesture_off_button">Kapalı</string>
+    <string name="gesture_permission_button">İzin gerekli</string>
+    <string name="health_page_desc">Yerel HyperOS gezinmesini sağlayan bileşenlerin canlı çalışma durumu.</string>
+    <string name="gestures_page_desc">Etkin HyperOS sistem gezinme hattı üzerinden kullanılabilen hareketler.</string>
+    <string name="health_home_detected">Varsayılan başlatıcı algılandı</string>
 </resources>

@@ -8,6 +8,14 @@ if (releaseKeystoreFile.exists()) {
     releaseKeystoreFile.withInputStream { releaseKeystoreProperties.load(it) }
 }
 
+def envReleaseStoreFile = System.getenv("HGA_RELEASE_STORE_FILE")
+def hasEnvironmentSigning = envReleaseStoreFile != null &&
+        System.getenv("HGA_RELEASE_STORE_PASSWORD") != null &&
+        System.getenv("HGA_RELEASE_KEY_ALIAS") != null &&
+        System.getenv("HGA_RELEASE_KEY_PASSWORD") != null
+def hasReleaseSigning = releaseKeystoreFile.exists() || hasEnvironmentSigning
+def resolvedVersionName = System.getenv("HGA_VERSION_NAME") ?: "1.1.0"
+
 def gitCommitCount = providers.exec {
     workingDir rootProject.projectDir
     commandLine "git", "rev-list", "--count", "HEAD"
@@ -30,16 +38,24 @@ android {
         minSdk 35
         targetSdk 36
         versionCode gitCommitCount.get()
-        versionName "1.1.0"
+        versionName resolvedVersionName
     }
 
     signingConfigs {
-        if (releaseKeystoreFile.exists()) {
+        if (hasReleaseSigning) {
             release {
-                storeFile rootProject.file(releaseKeystoreProperties["storeFile"])
-                storePassword releaseKeystoreProperties["storePassword"]
-                keyAlias releaseKeystoreProperties["keyAlias"]
-                keyPassword releaseKeystoreProperties["keyPassword"]
+                storeFile hasEnvironmentSigning
+                        ? file(envReleaseStoreFile)
+                        : rootProject.file(releaseKeystoreProperties["storeFile"])
+                storePassword hasEnvironmentSigning
+                        ? System.getenv("HGA_RELEASE_STORE_PASSWORD")
+                        : releaseKeystoreProperties["storePassword"]
+                keyAlias hasEnvironmentSigning
+                        ? System.getenv("HGA_RELEASE_KEY_ALIAS")
+                        : releaseKeystoreProperties["keyAlias"]
+                keyPassword hasEnvironmentSigning
+                        ? System.getenv("HGA_RELEASE_KEY_PASSWORD")
+                        : releaseKeystoreProperties["keyPassword"]
             }
         }
     }
@@ -52,7 +68,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            if (releaseKeystoreFile.exists()) {
+            if (hasReleaseSigning) {
                 signingConfig signingConfigs.release
             }
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"),
