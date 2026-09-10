@@ -14,7 +14,7 @@ def hasEnvironmentSigning = envReleaseStoreFile != null &&
         System.getenv("HGA_RELEASE_KEY_ALIAS") != null &&
         System.getenv("HGA_RELEASE_KEY_PASSWORD") != null
 def hasReleaseSigning = releaseKeystoreFile.exists() || hasEnvironmentSigning
-def resolvedVersionName = System.getenv("HGA_VERSION_NAME") ?: "1.1.0"
+def resolvedVersionName = System.getenv("HGA_VERSION_NAME") ?: "1.2.0"
 
 def gitCommitCount = providers.exec {
     workingDir rootProject.projectDir
