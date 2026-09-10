@@ -5,7 +5,8 @@
 <h1 align="center">HyperOS Gestures Activator</h1>
 
 <p align="center">
-  <a href="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android-ci.yml"><img src="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android-ci.yml/badge.svg" alt="Android CI"></a>
+  <a href="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android.yml"><img src="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android.yml/badge.svg" alt="Android Build and Release"></a>
+  <a href="https://github.com/GloriousTR/HyperOS-Gestures-Activator/releases/tag/v1.2.0"><img src="https://img.shields.io/github/v/release/GloriousTR/HyperOS-Gestures-Activator" alt="Latest release"></a>
 </p>
 
 <p align="center">
@@ -18,24 +19,30 @@
 > Sistem bileşenlerine hook uygular; yalnız uyumlu HyperOS cihazlarda ve geri dönüş
 > yöntemi hazırken kullanın.
 
-## v1.1.0 ile gelenler
+## v1.2.0 ile gelenler
 
 - **Geri:** Sol veya sağ kenardan içeri kaydırma.
 - **Ana ekran:** Alt kenardan hızlıca yukarı kaydırma; seçili üçüncü taraf HOME açılır.
 - **Son uygulamalar:** Yukarı kaydırıp bekletme; Xiaomi Overview/Recents yolu açılır.
 - **Hızlı uygulama geçişi:** Alt hareket alanında yatay kaydırma; son iki uygun uygulama
   arasında iki yönde geçiş.
-- **Live Diagnostics:** Başarılı, başarısız ve bilgi olaylarını kalıcı olarak kaydetme,
-  filtreleme, sistem anlık görüntüsü alma ve UTF-8 tanılama raporu dışa aktarma.
+- **MTZ Studio tarzı Canlı Tanılama:** Başarılı, başarısız ve bilgi olaylarını canlı
+  konsolda görüntüleme; filtreleme, anlık sistem kaydı ve UTF-8 rapor dışa aktarma.
 - **Güvenli kapatma:** Önceki gezinme ayarını saklama ve tek dokunuşla geri yükleme.
 - **Sistem dili desteği:** İngilizce ve Türkçe dahil 21 Android uygulama dili.
 - **Çin ROM desteği:** `com.miui.home` paketli resmi Xiaomi Launcher motoru.
 - **Yeni üst menü:** MTZ Studio ile uyumlu üç çizgili, kart tabanlı menü; yinelenen
   ana sayfa araçları kaldırıldı.
-- **Varsayılan / Aero Glass:** Görünüm menüsünden seçilebilen, sistemin açık-koyu
-  modunu izleyen iki arayüz stili.
-- **Yeni kontrol merkezi:** Animasyonlu hareket durumu, renk kodlu Sistem Sağlığı
-  kutuları ve iki sütunlu hareket rehberi; MTZ Studio v4 ekran diliyle uyumlu.
+- **Tam tema sistemi:** Sistem varsayılanı, AMOLED, Light Mode ve Dark Mode renk
+  seçenekleri; bunlardan bağımsız Varsayılan ve Aero Glass içerik tasarımları.
+- **Yeni kontrol merkezi:** Ortalanmış hareketle gezinme durum kapsülü, Root yöneticisi
+  ve Vector/LSPosed kısayolları, daha kompakt köşe yapısı ve profesyonel kart düzeni.
+- **Ayrı durum sayfaları:** Sistem Sağlığı ve Hareketler kartları ayrıntılarını artık
+  kendi tema uyumlu sayfalarında gösterir.
+- **İletişim:** Canlı Tanılama ve Hakkında ekranlarından Telegram üzerinden
+  [@glorioustr](https://t.me/glorioustr) ile doğrudan iletişim.
+- **Tek GitHub workflow:** `main` ve pull request gönderilerinde CI; `v*` tag'lerinde
+  imzalı APK, SHA-256 özeti ve GitHub Release otomatik oluşturulur.
 
 Uygulama `KEYCODE_HOME` ya da sahte dokunma kullanmaz. Alt ve yan giriş pencereleri
 Xiaomi'nin kendi gesture motorunda kalır. Üçüncü taraf HOME'da yatay hareket, yönü
@@ -68,8 +75,8 @@ Xiaomi Launcher'ın etkileşimli kart-takip animasyonu kullanılmaz. Donmayı ö
 
 ## Kurulum
 
-1. [Releases](https://github.com/GloriousTR/HyperOS-Gestures-Activator/releases)
-   sayfasından v1.1.0 APK'sını yükleyin.
+1. [v1.2.0 sürüm sayfasından](https://github.com/GloriousTR/HyperOS-Gestures-Activator/releases/tag/v1.2.0)
+   `HyperOS-Gestures-Activator-v1.2.0.apk` dosyasını yükleyin.
 2. Uygulamaya `WRITE_SECURE_SETTINGS` iznini bir kez verin:
 
    ```powershell
@@ -84,10 +91,10 @@ Xiaomi Launcher'ın etkileşimli kart-takip animasyonu kullanılmaz. Donmayı ö
    - Xiaomi China Başlatıcı — `com.miui.home` (cihazda mevcutsa)
 
 4. Cihazı yeniden başlatın.
-5. Uygulamada SystemUI ve Xiaomi Launcher motoru **Hazır** göründüğünde
-   **Hareketleri etkinleştir** düğmesine dokunun.
-6. Sorun yaşarsanız **Güvenli şekilde kapat** seçeneğini kullanın ve menüden
-   **Live Diagnostics** ekranını kontrol edin.
+5. Uygulamada **Sistem Sağlığı** sayfasında SystemUI ve Xiaomi Launcher motoru
+   **Hazır** göründüğünde ana ekrandaki **Hareketle gezinme** kapsülünden durumu açın.
+6. Sorun yaşarsanız aynı kapsülden özelliği güvenli biçimde kapatın ve menüden
+   **Canlı Tanılama** ekranını kontrol edin veya raporu `@glorioustr` ile paylaşın.
 
 > [!NOTE]
 > Debug APK kullanıyorsanız izin komutundaki paket adı
@@ -102,7 +109,7 @@ Xiaomi Launcher'ın etkileşimli kart-takip animasyonu kullanılmaz. Donmayı ö
 | Alttan yukarı ve beklet | Son uygulamalar |
 | Alt kenarda sola veya sağa | Önceki uygulamaya hızlı geçiş |
 
-## Live Diagnostics
+## Canlı Tanılama
 
 Tanılama ekranı sol üstteki üç çizgili menüden açılır. Şunları kaydeder:
 
@@ -113,13 +120,14 @@ Tanılama ekranı sol üstteki üç çizgili menüden açılır. Şunları kayde
 - hızlı geçiş hedef görev kimliği, bileşeni ve başarı/hata sonucu;
 - hata stack trace'i ile process/thread kaynağı.
 
-Ekran performans için son 1000 olayı gösterir. Dışa aktarılan rapor, yerel
+MTZ Studio ile uyumlu ekran; durum rozeti, renkli olay konsolu, sonuç filtreleri ve
+ayrı tanılama araçları kartlarından oluşur. Ekran performans için son 1000 olayı gösterir. Dışa aktarılan rapor, yerel
 device-protected SQLite veritabanındaki tüm olayları içerir. Kayıtlar yalnız kullanıcı
 **Temizle** işlemini onayladığında silinir.
 
 ## Derleme
 
-Gereksinimler: JDK 21 ve Android SDK 36.
+Gereksinimler: JDK 17 ve Android SDK 36.
 
 ```powershell
 .\gradlew.bat assembleDebug
@@ -150,6 +158,18 @@ META-INF/xposed/java_init.list
 META-INF/xposed/module.prop
 META-INF/xposed/scope.list
 ```
+
+GitHub'da tek workflow kullanılır: `.github/workflows/android.yml`. Bir sürüm
+oluşturmak için SemVer biçiminde tag gönderilir:
+
+```powershell
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+Tag çalışması, repository Actions secrets içindeki release anahtarıyla APK'yı
+imzalar, LSPosed metadata dosyalarını doğrular ve APK ile SHA-256 dosyasını GitHub
+Release'e ekler.
 
 Teknik cihaz araştırması ve test matrisi:
 [docs/hyperos3-investigation.md](docs/hyperos3-investigation.md)
