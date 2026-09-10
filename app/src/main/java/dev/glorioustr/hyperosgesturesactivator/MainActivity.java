@@ -262,11 +262,17 @@ public final class MainActivity extends Activity {
         navigationRow.setOrientation(LinearLayout.HORIZONTAL);
         navigationRow.setGravity(Gravity.CENTER_VERTICAL);
         navigationRow.setPadding(dp(14), dp(7), dp(7), dp(7));
-        navigationRow.setBackground(aeroGlass
-                ? gradient(new int[]{Color.rgb(23, 56, 77), Color.rgb(59, 47, 76)},
-                        24, Color.argb(145, 194, 224, 255), 1)
-                : rounded(darkMode ? Color.rgb(45, 45, 54) : Color.rgb(241, 244, 249),
-                        24, darkMode ? Color.rgb(91, 98, 115) : Color.rgb(211, 219, 231), 1));
+        if (aeroGlass) {
+            navigationRow.setBackground(darkMode
+                    ? gradient(new int[]{Color.rgb(23, 56, 77), Color.rgb(59, 47, 76)},
+                            24, Color.argb(145, 194, 224, 255), 1)
+                    : gradient(new int[]{Color.rgb(222, 241, 248), Color.rgb(235, 225, 245)},
+                            24, Color.rgb(148, 172, 204), 1));
+        } else {
+            navigationRow.setBackground(rounded(
+                    darkMode ? Color.rgb(45, 45, 54) : Color.rgb(241, 244, 249),
+                    24, darkMode ? Color.rgb(91, 98, 115) : Color.rgb(211, 219, 231), 1));
+        }
         statusTitle = text(getString(R.string.gesture_navigation_label), 19,
                 primaryTextColor(), Typeface.BOLD);
         navigationRow.addView(statusTitle, new LinearLayout.LayoutParams(
