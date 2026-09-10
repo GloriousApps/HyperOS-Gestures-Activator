@@ -9,6 +9,11 @@
 - Ana sayfadaki yinelenen Sistem Araçları kartı kaldırıldı; Live Diagnostics, anlık
   kayıt ve Hakkında seçenekleri MTZ Studio tarzı üst menüde birleştirildi.
 - Üç noktalı düğme, sol üstte üç çizgili menü simgesi ve kart tabanlı menüyle değiştirildi.
+- MTZ Studio v4 görsel diliyle uyumlu Varsayılan ve Aero Glass arayüz stilleri eklendi;
+  sistemin açık/koyu görünümü otomatik izleniyor.
+- Aktif gezinme alanına animasyonlu hareket görseli, Sistem Sağlığı ve Hareketler
+  bölümlerine renk kodlu iki sütunlu durum kartları eklendi.
+- Görünüm seçimi desteklenen 21 uygulama diline yerelleştirildi.
 
 ## 1.0.0 — 2026-09-02
 

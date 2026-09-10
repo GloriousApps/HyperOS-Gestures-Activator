@@ -8,11 +8,18 @@
     <string name="menu_cd">Menu</string>
     <string name="menu_live_diagnostics">Live Diagnostics</string>
     <string name="menu_snapshot">System snapshot</string>
+    <string name="menu_appearance">Appearance</string>
     <string name="menu_about">About</string>
     <string name="menu_overlay_subtitle">Diagnostics and system tools</string>
     <string name="menu_snapshot_desc">Save the current navigation and hook state</string>
     <string name="menu_about_desc">View version details and the project link</string>
     <string name="menu_close">Close</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_subtitle">Choose the visual style used across the control center</string>
+    <string name="style_default_title">Default</string>
+    <string name="style_default_desc">Clean Material surfaces with a bright, neutral background</string>
+    <string name="style_aero_glass_title">Aero Glass</string>
+    <string name="style_aero_glass_desc">Layered blue-purple glass surfaces with luminous edges</string>
     <string name="section_system_health">System health</string>
     <string name="section_gestures">Gestures</string>
     <string name="section_system_tools">System tools</string>
@@ -24,7 +31,7 @@
     <string name="status_permission_desc">The permission required to change the system navigation mode is missing.</string>
     <string name="status_active_label">ACTIVE</string>
     <string name="status_active_title">Gesture navigation is on</string>
-    <string name="status_active_desc">The HyperOS gesture engine is ready to use with Smart Launcher.</string>
+    <string name="status_active_desc">The HyperOS gesture engine is ready to use with your selected launcher.</string>
     <string name="status_starting_label">STARTING</string>
     <string name="status_starting_title">Waiting for system transition</string>
     <string name="status_starting_desc">SystemUI and Launcher are preparing the navigation mode.</string>

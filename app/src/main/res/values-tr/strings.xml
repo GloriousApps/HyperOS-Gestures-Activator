@@ -5,11 +5,18 @@
     <string name="menu_cd">Menü</string>
     <string name="menu_live_diagnostics">Canlı Tanılama</string>
     <string name="menu_snapshot">Anlık sistem kaydı</string>
+    <string name="menu_appearance">Görünüm</string>
     <string name="menu_about">Hakkında</string>
     <string name="menu_overlay_subtitle">Tanılama ve sistem araçları</string>
     <string name="menu_snapshot_desc">Geçerli gezinme ve hook durumunu kaydet</string>
     <string name="menu_about_desc">Sürüm bilgilerini ve proje bağlantısını görüntüle</string>
     <string name="menu_close">Kapat</string>
+    <string name="appearance_title">Görünüm</string>
+    <string name="appearance_subtitle">Kontrol merkezinde kullanılacak görsel stili seç</string>
+    <string name="style_default_title">Varsayılan</string>
+    <string name="style_default_desc">Aydınlık ve nötr arka planlı sade Material yüzeyler</string>
+    <string name="style_aero_glass_title">Aero Glass</string>
+    <string name="style_aero_glass_desc">Işıltılı kenarlara sahip katmanlı mavi-mor cam yüzeyler</string>
     <string name="section_system_health">Sistem sağlığı</string>
     <string name="section_gestures">Hareketler</string>
     <string name="section_system_tools">Sistem araçları</string>
@@ -21,7 +28,7 @@
     <string name="status_permission_desc">Sistem gezinme modunu değiştirmek için gerekli izin eksik.</string>
     <string name="status_active_label">AKTİF</string>
     <string name="status_active_title">Hareketle gezinme açık</string>
-    <string name="status_active_desc">HyperOS hareket motoru Smart Launcher ile kullanıma hazır.</string>
+    <string name="status_active_desc">HyperOS hareket motoru seçili ana ekran uygulamanızla kullanıma hazır.</string>
     <string name="status_starting_label">BAŞLATILIYOR</string>
     <string name="status_starting_title">Sistem geçişi bekleniyor</string>
     <string name="status_starting_desc">SystemUI ve Launcher gezinme modunu hazırlıyor.</string>

@@ -32,6 +32,10 @@
 - **Çin ROM desteği:** `com.miui.home` paketli resmi Xiaomi Launcher motoru.
 - **Yeni üst menü:** MTZ Studio ile uyumlu üç çizgili, kart tabanlı menü; yinelenen
   ana sayfa araçları kaldırıldı.
+- **Varsayılan / Aero Glass:** Görünüm menüsünden seçilebilen, sistemin açık-koyu
+  modunu izleyen iki arayüz stili.
+- **Yeni kontrol merkezi:** Animasyonlu hareket durumu, renk kodlu Sistem Sağlığı
+  kutuları ve iki sütunlu hareket rehberi; MTZ Studio v4 ekran diliyle uyumlu.
 
 Uygulama `KEYCODE_HOME` ya da sahte dokunma kullanmaz. Alt ve yan giriş pencereleri
 Xiaomi'nin kendi gesture motorunda kalır. Üçüncü taraf HOME'da yatay hareket, yönü

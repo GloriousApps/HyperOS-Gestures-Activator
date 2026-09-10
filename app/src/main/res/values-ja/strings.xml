@@ -7,4 +7,5 @@
     <string name="about_title">このアプリについて</string><string name="about_version">バージョン %1$s</string><string name="about_description">サードパーティ製ランチャーでも、透明な診断と安全な復元機能を備えたHyperOS純正ジェスチャー体験を復元します。</string><string name="about_open_github">GitHubを開く</string>
     <string name="gesture_quick_switch_title">アプリを切り替える</string><string name="gesture_quick_switch_desc">下端に沿って左右にスワイプ</string>
     <string name="menu_overlay_subtitle">診断とシステムツール</string><string name="menu_snapshot_desc">現在のナビゲーションとフック状態を保存</string><string name="menu_about_desc">バージョン情報とプロジェクトリンクを表示</string><string name="menu_close">閉じる</string>
+    <string name="menu_appearance">外観</string><string name="appearance_title">外観</string><string name="appearance_subtitle">コントロールセンターの表示スタイルを選択</string><string name="style_default_title">デフォルト</string><string name="style_default_desc">落ち着いた単色のクリーンなサーフェス</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">半透明で輝きのある流動的なガラスサーフェス</string>
 </resources>

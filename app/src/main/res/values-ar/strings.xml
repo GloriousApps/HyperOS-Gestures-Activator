@@ -7,4 +7,5 @@
     <string name="about_title">حول</string><string name="about_version">الإصدار %1$s</string><string name="about_description">يعيد تجربة إيماءات HyperOS الأصلية مع مشغل خارجي، مع تشخيص واضح واستعادة آمنة.</string><string name="about_open_github">فتح GitHub</string>
     <string name="gesture_quick_switch_title">التبديل بين التطبيقات</string><string name="gesture_quick_switch_desc">اسحب يسارًا أو يمينًا بمحاذاة الحافة السفلية</string>
     <string name="menu_overlay_subtitle">التشخيص وأدوات النظام</string><string name="menu_snapshot_desc">حفظ حالة التنقل والخطافات الحالية</string><string name="menu_about_desc">عرض تفاصيل الإصدار ورابط المشروع</string><string name="menu_close">إغلاق</string>
+    <string name="menu_appearance">المظهر</string><string name="appearance_title">المظهر</string><string name="appearance_subtitle">اختر النمط المرئي لمركز التحكم</string><string name="style_default_title">افتراضي</string><string name="style_default_desc">أسطح نظيفة بألوان صلبة ومتوازنة</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">أسطح زجاجية شفافة ومتوهجة وانسيابية</string>
 </resources>

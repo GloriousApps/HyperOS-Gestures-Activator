@@ -7,4 +7,5 @@
     <string name="about_title">정보</string><string name="about_version">버전 %1$s</string><string name="about_description">타사 런처 사용 시 투명한 진단과 안전한 복구 기능으로 HyperOS 기본 제스처 환경을 복원합니다.</string><string name="about_open_github">GitHub 열기</string>
     <string name="gesture_quick_switch_title">앱 전환</string><string name="gesture_quick_switch_desc">아래쪽 가장자리를 따라 왼쪽이나 오른쪽으로 스와이프</string>
     <string name="menu_overlay_subtitle">진단 및 시스템 도구</string><string name="menu_snapshot_desc">현재 탐색 및 후크 상태 저장</string><string name="menu_about_desc">버전 정보와 프로젝트 링크 보기</string><string name="menu_close">닫기</string>
+    <string name="menu_appearance">모양</string><string name="appearance_title">모양</string><string name="appearance_subtitle">제어 센터의 시각적 스타일을 선택하세요</string><string name="style_default_title">기본</string><string name="style_default_desc">단색과 균형 잡힌 색상의 깔끔한 표면</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">반투명하고 빛나는 유동적인 유리 표면</string>
 </resources>

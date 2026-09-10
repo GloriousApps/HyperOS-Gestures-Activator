@@ -7,4 +7,5 @@
     <string name="about_title">درباره</string><string name="about_version">نسخه %1$s</string><string name="about_description">تجربه حرکات بومی HyperOS را با لانچر شخص ثالث، عیب‌یابی شفاف و بازیابی امن بازمی‌گرداند.</string><string name="about_open_github">باز کردن GitHub</string>
     <string name="gesture_quick_switch_title">تغییر برنامه</string><string name="gesture_quick_switch_desc">در امتداد لبه پایین به چپ یا راست بکشید</string>
     <string name="menu_overlay_subtitle">عیب‌یابی و ابزارهای سیستم</string><string name="menu_snapshot_desc">ذخیره وضعیت فعلی پیمایش و هوک‌ها</string><string name="menu_about_desc">نمایش نسخه و پیوند پروژه</string><string name="menu_close">بستن</string>
+    <string name="menu_appearance">ظاهر</string><string name="appearance_title">ظاهر</string><string name="appearance_subtitle">سبک بصری مرکز کنترل را انتخاب کنید</string><string name="style_default_title">پیش‌فرض</string><string name="style_default_desc">سطوح تمیز با رنگ‌های یکدست و متعادل</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">سطوح شیشه‌ای نیمه‌شفاف، درخشان و روان</string>
 </resources>

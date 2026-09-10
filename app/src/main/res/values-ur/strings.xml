@@ -7,4 +7,5 @@
     <string name="about_title">تعارف</string><string name="about_version">ورژن %1$s</string><string name="about_description">تیسرے فریق لانچر کے ساتھ مقامی HyperOS اشارے، شفاف تشخیص اور محفوظ بحالی فراہم کرتا ہے۔</string><string name="about_open_github">GitHub کھولیں</string>
     <string name="gesture_quick_switch_title">ایپ تبدیل کریں</string><string name="gesture_quick_switch_desc">نیچے کے کنارے پر بائیں یا دائیں سوائپ کریں</string>
     <string name="menu_overlay_subtitle">تشخیص اور سسٹم ٹولز</string><string name="menu_snapshot_desc">موجودہ نیویگیشن اور ہک حالت محفوظ کریں</string><string name="menu_about_desc">ورژن اور پروجیکٹ لنک دیکھیں</string><string name="menu_close">بند کریں</string>
+    <string name="menu_appearance">ظاہری شکل</string><string name="appearance_title">ظاہری شکل</string><string name="appearance_subtitle">کنٹرول سینٹر کا بصری انداز منتخب کریں</string><string name="style_default_title">ڈیفالٹ</string><string name="style_default_desc">ٹھوس اور متوازن رنگوں والی صاف سطحیں</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">شفاف، چمکدار اور رواں شیشے کی سطحیں</string>
 </resources>

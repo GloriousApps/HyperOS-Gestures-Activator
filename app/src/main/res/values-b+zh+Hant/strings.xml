@@ -7,4 +7,5 @@
     <string name="about_title">關於</string><string name="about_version">版本 %1$s</string><string name="about_description">使用第三方啟動器時恢復 HyperOS 原生手勢體驗，並提供透明診斷與安全復原。</string><string name="about_open_github">開啟 GitHub</string>
     <string name="gesture_quick_switch_title">切換應用程式</string><string name="gesture_quick_switch_desc">沿底部邊緣向左或向右滑動</string>
     <string name="menu_overlay_subtitle">診斷與系統工具</string><string name="menu_snapshot_desc">儲存目前導覽與 Hook 狀態</string><string name="menu_about_desc">查看版本詳情與專案連結</string><string name="menu_close">關閉</string>
+    <string name="menu_appearance">外觀</string><string name="appearance_title">外觀</string><string name="appearance_subtitle">選擇控制中心的視覺風格</string><string name="style_default_title">預設</string><string name="style_default_desc">簡潔、純色且平衡的介面</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">半透明、發光且流動的玻璃表面</string>
 </resources>

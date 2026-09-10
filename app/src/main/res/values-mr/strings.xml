@@ -7,4 +7,5 @@
     <string name="about_title">माहिती</string><string name="about_version">आवृत्ती %1$s</string><string name="about_description">तृतीय-पक्ष लाँचरसह मूळ HyperOS जेस्चर, पारदर्शक निदान आणि सुरक्षित पुनर्स्थापना देते.</string><string name="about_open_github">GitHub उघडा</string>
     <string name="gesture_quick_switch_title">अॅप बदला</string><string name="gesture_quick_switch_desc">खालच्या कडेवर डावीकडे किंवा उजवीकडे स्वाइप करा</string>
     <string name="menu_overlay_subtitle">निदान आणि सिस्टम साधने</string><string name="menu_snapshot_desc">सध्याची नेव्हिगेशन आणि हुक स्थिती जतन करा</string><string name="menu_about_desc">आवृत्ती आणि प्रकल्प दुवा पहा</string><string name="menu_close">बंद करा</string>
+    <string name="menu_appearance">स्वरूप</string><string name="appearance_title">स्वरूप</string><string name="appearance_subtitle">नियंत्रण केंद्राची दृश्य शैली निवडा</string><string name="style_default_title">डीफॉल्ट</string><string name="style_default_desc">घन आणि संतुलित रंगांसह स्वच्छ पृष्ठभाग</string><string name="style_aero_glass_title">Aero Glass</string><string name="style_aero_glass_desc">पारदर्शक, चमकदार आणि प्रवाही काचेचे पृष्ठभाग</string>
 </resources>
