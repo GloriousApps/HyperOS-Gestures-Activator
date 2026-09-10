@@ -17,10 +17,14 @@ public final class DiagnosticEventReceiver extends BroadcastReceiver {
 
         int senderUid = getSentFromUid();
         int systemUiUid = resolveSystemUiUid(context);
-        int launcherUid = resolvePackageUid(context, "com.mi.android.globallauncher", -1);
+        int globalLauncherUid = resolvePackageUid(
+                context, "com.mi.android.globallauncher", Process.INVALID_UID);
+        int chinaLauncherUid = resolvePackageUid(
+                context, "com.miui.home", Process.INVALID_UID);
         if (senderUid != Process.INVALID_UID
                 && senderUid != systemUiUid
-                && senderUid != launcherUid) {
+                && senderUid != globalLauncherUid
+                && senderUid != chinaLauncherUid) {
             DiagnosticDatabase.get(context).insert(new DiagnosticEvent(
                     0L,
                     System.currentTimeMillis(),
@@ -29,7 +33,8 @@ public final class DiagnosticEventReceiver extends BroadcastReceiver {
                     "reject-diagnostic-event",
                     "Rejected sender uid=" + senderUid
                             + ", expectedSystemUiUid=" + systemUiUid
-                            + ", expectedLauncherUid=" + launcherUid
+                            + ", expectedGlobalLauncherUid=" + globalLauncherUid
+                            + ", expectedChinaLauncherUid=" + chinaLauncherUid
                             + ", package=" + getSentFromPackage(),
                     context.getPackageName(),
                     Thread.currentThread().getName()));

@@ -6,6 +6,10 @@
     <string name="menu_live_diagnostics">Canlı Tanılama</string>
     <string name="menu_snapshot">Anlık sistem kaydı</string>
     <string name="menu_about">Hakkında</string>
+    <string name="menu_overlay_subtitle">Tanılama ve sistem araçları</string>
+    <string name="menu_snapshot_desc">Geçerli gezinme ve hook durumunu kaydet</string>
+    <string name="menu_about_desc">Sürüm bilgilerini ve proje bağlantısını görüntüle</string>
+    <string name="menu_close">Kapat</string>
     <string name="section_system_health">Sistem sağlığı</string>
     <string name="section_gestures">Hareketler</string>
     <string name="section_system_tools">Sistem araçları</string>

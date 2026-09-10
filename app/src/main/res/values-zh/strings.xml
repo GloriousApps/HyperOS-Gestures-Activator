@@ -6,4 +6,5 @@
     <string name="diagnostics_subtitle">系统事件与操作历史</string><string name="filter_all">全部</string><string name="filter_success">成功</string><string name="filter_failure">失败</string><string name="filter_info">信息</string><string name="action_snapshot">快照</string><string name="action_export">导出报告</string><string name="action_clear">清除记录</string>
     <string name="about_title">关于</string><string name="about_version">版本 %1$s</string><string name="about_description">使用第三方启动器时恢复 HyperOS 原生手势体验，并提供透明诊断和安全恢复。</string><string name="about_open_github">打开 GitHub</string>
     <string name="gesture_quick_switch_title">切换应用</string><string name="gesture_quick_switch_desc">沿底部边缘向左或向右滑动</string>
+    <string name="menu_overlay_subtitle">诊断和系统工具</string><string name="menu_snapshot_desc">保存当前导航和 Hook 状态</string><string name="menu_about_desc">查看版本详情和项目链接</string><string name="menu_close">关闭</string>
 </resources>

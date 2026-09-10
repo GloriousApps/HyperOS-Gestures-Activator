@@ -5,6 +5,10 @@
 <h1 align="center">HyperOS Gestures Activator</h1>
 
 <p align="center">
+  <a href="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android-ci.yml"><img src="https://github.com/GloriousTR/HyperOS-Gestures-Activator/actions/workflows/android-ci.yml/badge.svg" alt="Android CI"></a>
+</p>
+
+<p align="center">
   HyperOS 3'ün yerel tam ekran hareketlerini üçüncü taraf launcher'larla kullanılabilir
   tutan LSPosed modülü.
 </p>
@@ -14,7 +18,7 @@
 > Sistem bileşenlerine hook uygular; yalnız uyumlu HyperOS cihazlarda ve geri dönüş
 > yöntemi hazırken kullanın.
 
-## v1.0.0 ile gelenler
+## v1.1.0 ile gelenler
 
 - **Geri:** Sol veya sağ kenardan içeri kaydırma.
 - **Ana ekran:** Alt kenardan hızlıca yukarı kaydırma; seçili üçüncü taraf HOME açılır.
@@ -25,6 +29,9 @@
   filtreleme, sistem anlık görüntüsü alma ve UTF-8 tanılama raporu dışa aktarma.
 - **Güvenli kapatma:** Önceki gezinme ayarını saklama ve tek dokunuşla geri yükleme.
 - **Sistem dili desteği:** İngilizce ve Türkçe dahil 21 Android uygulama dili.
+- **Çin ROM desteği:** `com.miui.home` paketli resmi Xiaomi Launcher motoru.
+- **Yeni üst menü:** MTZ Studio ile uyumlu üç çizgili, kart tabanlı menü; yinelenen
+  ana sayfa araçları kaldırıldı.
 
 Uygulama `KEYCODE_HOME` ya da sahte dokunma kullanmaz. Alt ve yan giriş pencereleri
 Xiaomi'nin kendi gesture motorunda kalır. Üçüncü taraf HOME'da yatay hareket, yönü
@@ -37,7 +44,8 @@ RecentsAnimation tüketicisi başlatılmadan hedef Android'in gerçek son görev
 | Bileşen | Durum |
 |---|---|
 | HyperOS 3 / Android 16 | Desteklenen hedef |
-| Xiaomi/POCO Global Launcher | Gerekli gesture motoru |
+| Xiaomi/POCO Global Launcher (`com.mi.android.globallauncher`) | Desteklenen gesture motoru |
+| Xiaomi China Launcher (`com.miui.home`) | v1.1.0 ile desteklenen gesture motoru |
 | Smart Launcher | Cihaz üzerinde doğrulandı |
 | Diğer üçüncü taraf launcher'lar | Standart Android HOME intent'i kullandıkları sürece tasarım gereği desteklenir; cihaz/firmware testi gerekir |
 | libxposed API | 102 |
@@ -57,18 +65,19 @@ Xiaomi Launcher'ın etkileşimli kart-takip animasyonu kullanılmaz. Donmayı ö
 ## Kurulum
 
 1. [Releases](https://github.com/GloriousTR/HyperOS-Gestures-Activator/releases)
-   sayfasından v1.0.0 APK'sını yükleyin.
+   sayfasından v1.1.0 APK'sını yükleyin.
 2. Uygulamaya `WRITE_SECURE_SETTINGS` iznini bir kez verin:
 
    ```powershell
    adb shell pm grant dev.glorioustr.hyperosgesturesactivator android.permission.WRITE_SECURE_SETTINGS
    ```
 
-3. Vector/LSPosed içinde modülü etkinleştirin. Sabit kapsamda şunların ikisi de
-   seçili olmalıdır:
+3. Vector/LSPosed içinde modülü etkinleştirin. Sabit kapsamda SystemUI ve cihazınızda
+   kurulu olan Xiaomi Launcher paketi seçili olmalıdır:
 
    - Sistem Arayüzü — `com.android.systemui`
-   - POCO/Xiaomi Başlatıcı — `com.mi.android.globallauncher`
+   - POCO/Xiaomi Global Başlatıcı — `com.mi.android.globallauncher`
+   - Xiaomi China Başlatıcı — `com.miui.home` (cihazda mevcutsa)
 
 4. Cihazı yeniden başlatın.
 5. Uygulamada SystemUI ve Xiaomi Launcher motoru **Hazır** göründüğünde
@@ -91,8 +100,7 @@ Xiaomi Launcher'ın etkileşimli kart-takip animasyonu kullanılmaz. Donmayı ö
 
 ## Live Diagnostics
 
-Tanılama ekranı ana sayfadaki **Sistem araçları** bölümünden veya sağ üst menüden
-açılır. Şunları kaydeder:
+Tanılama ekranı sol üstteki üç çizgili menüden açılır. Şunları kaydeder:
 
 - SystemUI ve Xiaomi Launcher hook hazırlığı;
 - varsayılan HOME bileşeni ve gezinme ayarları;
@@ -125,9 +133,9 @@ app/build/outputs/apk/release/app-release.apk
 kullanılır:
 
 ```properties
-storeFile=keystore/hga-release.jks
+storeFile=keystore/hyperos-gestures-release.jks
 storePassword=...
-keyAlias=hga
+keyAlias=hga-release
 keyPassword=...
 ```
 
@@ -144,12 +152,14 @@ Teknik cihaz araştırması ve test matrisi:
 
 ## Tasarım ve güvenlik ilkeleri
 
-- Statik LSPosed kapsamı yalnız `com.android.systemui` ve cihazda gesture motorunu
-  sağlayan `com.mi.android.globallauncher` ile sınırlıdır.
+- Statik LSPosed kapsamı yalnız `com.android.systemui` ile resmi Global/POCO
+  (`com.mi.android.globallauncher`) ve Çin ROM (`com.miui.home`) Xiaomi Launcher
+  paketleriyle sınırlıdır.
 - Kullanıcının bağımsız MiuiBackGestureHook kurulumu ve ayarları değiştirilmez.
 - Hook bulunamadığında modül mümkün olduğunca zarif biçimde devam eder ve hatayı
   Live Diagnostics'e kaydeder.
-- Tanılama yayınları yalnız gerçek SystemUI/Xiaomi Launcher UID'lerinden kabul edilir.
+- Tanılama yayınları yalnız gerçek SystemUI ile Global veya Çin ROM Xiaomi Launcher
+  UID'lerinden kabul edilir.
 - Aktivasyon kapatıldığında önceki navigation değeri geri yüklenir.
 
 ## Lisans

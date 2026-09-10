@@ -139,6 +139,14 @@ Hedef çözümü ve sonuç Live Diagnostics'e `quick-switch` kategorisiyle kayde
 önlemek için yok sayılır. Xiaomi ana ekranına özgü simgeye kapanma animasyonu üçüncü
 taraf launcher tarafından sağlanamaz.
 
+## v1.1.0 Çin ROM Launcher uyumluluğu
+
+Kullanıcı tanılama raporunda `defaultHome=com.miui.home/.launcher.Launcher`,
+`hooks={systemUi=true,launcher=false}` durumu görüldü. Bu, Çin ROM'un
+`com.miui.home` paketinin v1.0.0 statik kapsamında bulunmamasından kaynaklanıyordu.
+v1.1.0 hem `com.mi.android.globallauncher` hem `com.miui.home` paketlerini aynı
+küçük ve zarif Launcher hook hattına alır; `system_server` kapsamı eklenmez.
+
 ## v0.1.0 test matrisi
 
 Her satır için launcher seçildikten sonra 10 saniye bekleyin ve navbar görünümüyle

@@ -41,9 +41,10 @@ import io.github.libxposed.api.XposedModuleInterface;
 /** HyperOS gesture activation guards with persistent live diagnostics. */
 public final class HgaXposedModule extends XposedModule {
     private static final String TAG = "HGA/Diagnostics";
-    private static final String BUILD_MARK = "v1.0.0-quick-switch";
+    private static final String BUILD_MARK = "v1.1.0-dual-xiaomi-launcher";
     private static final String SYSTEM_UI = "com.android.systemui";
-    private static final String MIUI_LAUNCHER = "com.mi.android.globallauncher";
+    private static final String GLOBAL_MIUI_LAUNCHER = "com.mi.android.globallauncher";
+    private static final String CHINA_MIUI_LAUNCHER = "com.miui.home";
     private static final String NAVIGATION_MODE_CONTROLLER =
             "com.android.systemui.navigationbar.NavigationModeController";
     private static final String SYSTEM_UI_APPLICATION =
@@ -121,8 +122,8 @@ public final class HgaXposedModule extends XposedModule {
             installSystemUiHooks(param);
             return;
         }
-        if (MIUI_LAUNCHER.equals(param.getPackageName())
-                && MIUI_LAUNCHER.equals(processName)
+        if (isSupportedXiaomiLauncher(param.getPackageName())
+                && param.getPackageName().equals(processName)
                 && !launcherHooksInstalled) {
             installLauncherHooks(param);
         }
@@ -214,7 +215,7 @@ public final class HgaXposedModule extends XposedModule {
 
     private void installLauncherHooks(XposedModuleInterface.PackageLoadedParam param) {
         launcherHooksInstalled = true;
-        processName = MIUI_LAUNCHER;
+        processName = param.getPackageName();
         ClassLoader classLoader = param.getDefaultClassLoader();
         recordSuccess("lifecycle", "launcher-package-loaded",
                 "source=" + param.getApplicationInfo().sourceDir);
@@ -645,7 +646,7 @@ public final class HgaXposedModule extends XposedModule {
                     continue;
                 }
                 String packageName = task.topActivity.getPackageName();
-                if (MIUI_LAUNCHER.equals(packageName)
+                if (isSupportedXiaomiLauncher(packageName)
                         || packageName.equals(context.getPackageName())
                         || packageName.equals(homePackage)) {
                     continue;
@@ -1139,6 +1140,11 @@ public final class HgaXposedModule extends XposedModule {
             current = current.getSuperclass();
         }
         return null;
+    }
+
+    private static boolean isSupportedXiaomiLauncher(String packageName) {
+        return GLOBAL_MIUI_LAUNCHER.equals(packageName)
+                || CHINA_MIUI_LAUNCHER.equals(packageName);
     }
 
     private void record(XposedInterface.HookHandle handle) {

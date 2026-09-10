@@ -6,4 +6,5 @@
     <string name="diagnostics_subtitle">Sự kiện hệ thống và lịch sử thao tác</string><string name="filter_all">Tất cả</string><string name="filter_success">Thành công</string><string name="filter_failure">Thất bại</string><string name="filter_info">Thông tin</string><string name="action_snapshot">Ảnh chụp</string><string name="action_export">Xuất báo cáo</string><string name="action_clear">Xóa bản ghi</string>
     <string name="about_title">Giới thiệu</string><string name="about_version">Phiên bản %1$s</string><string name="about_description">Khôi phục trải nghiệm cử chỉ HyperOS gốc khi dùng launcher bên thứ ba, với chẩn đoán minh bạch và khôi phục an toàn.</string><string name="about_open_github">Mở GitHub</string>
     <string name="gesture_quick_switch_title">Chuyển ứng dụng</string><string name="gesture_quick_switch_desc">Vuốt sang trái hoặc phải dọc cạnh dưới</string>
+    <string name="menu_overlay_subtitle">Chẩn đoán và công cụ hệ thống</string><string name="menu_snapshot_desc">Lưu trạng thái điều hướng và hook hiện tại</string><string name="menu_about_desc">Xem phiên bản và liên kết dự án</string><string name="menu_close">Đóng</string>
 </resources>

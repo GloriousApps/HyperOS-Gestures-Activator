@@ -3,6 +3,7 @@ package dev.glorioustr.hyperosgesturesactivator;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +22,12 @@ import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +53,6 @@ public final class MainActivity extends Activity {
     private TextView systemUiHealth;
     private TextView launcherHealth;
     private TextView navigationHealth;
-    private TextView diagnosticsSummary;
     private TextView defaultHomeView;
 
     @Override
@@ -110,10 +113,6 @@ public final class MainActivity extends Activity {
         root.addView(sectionTitle(getString(R.string.section_gestures)), matchWrap());
         root.addView(space(10));
         root.addView(buildGestureCard(), matchWrap());
-        root.addView(space(24));
-        root.addView(sectionTitle(getString(R.string.section_system_tools)), matchWrap());
-        root.addView(space(10));
-        root.addView(buildDiagnosticsMenu(), matchWrap());
         root.addView(space(22));
 
         TextView footer = text(
@@ -133,6 +132,15 @@ public final class MainActivity extends Activity {
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding(0, dp(10), 0, dp(10));
 
+        TextView menu = text("☰", 25, Color.rgb(42, 54, 74), Typeface.BOLD);
+        menu.setGravity(Gravity.CENTER);
+        menu.setContentDescription(getString(R.string.menu_cd));
+        menu.setClickable(true);
+        menu.setFocusable(true);
+        menu.setBackgroundColor(Color.TRANSPARENT);
+        menu.setOnClickListener(this::showMainMenu);
+        row.addView(menu, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
         LinearLayout titles = new LinearLayout(this);
         titles.setOrientation(LinearLayout.VERTICAL);
         TextView title = text(getString(R.string.dashboard_title), 25,
@@ -142,17 +150,10 @@ public final class MainActivity extends Activity {
         subtitle.setPadding(0, dp(2), 0, 0);
         titles.addView(title, matchWrap());
         titles.addView(subtitle, matchWrap());
-        row.addView(titles, new LinearLayout.LayoutParams(0,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-
-        TextView menu = text("⋮", 28, Color.rgb(42, 54, 74), Typeface.BOLD);
-        menu.setGravity(Gravity.CENTER);
-        menu.setContentDescription(getString(R.string.menu_cd));
-        menu.setClickable(true);
-        menu.setFocusable(true);
-        menu.setBackground(rounded(Color.WHITE, 16, Color.rgb(224, 229, 238), 1));
-        menu.setOnClickListener(this::showMainMenu);
-        row.addView(menu, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        titleParams.setMarginStart(dp(8));
+        row.addView(titles, titleParams);
         return row;
     }
 
@@ -223,72 +224,6 @@ public final class MainActivity extends Activity {
         return card;
     }
 
-    private View buildDiagnosticsMenu() {
-        LinearLayout card = card();
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(0, dp(10), 0, dp(10));
-        row.setClickable(true);
-        row.setFocusable(true);
-        row.setContentDescription(getString(R.string.diagnostics_open_cd));
-        row.setOnClickListener(view -> openDiagnostics());
-
-        TextView icon = text("◉", 22, Color.rgb(71, 83, 160), Typeface.BOLD);
-        icon.setGravity(Gravity.CENTER);
-        icon.setBackground(rounded(Color.rgb(235, 238, 255), 14, Color.TRANSPARENT, 0));
-        row.addView(icon, new LinearLayout.LayoutParams(dp(46), dp(46)));
-
-        LinearLayout copy = new LinearLayout(this);
-        copy.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        copyParams.setMarginStart(dp(14));
-        row.addView(copy, copyParams);
-
-        copy.addView(text(getString(R.string.menu_live_diagnostics), 16,
-                Color.rgb(26, 35, 52), Typeface.BOLD), matchWrap());
-        diagnosticsSummary = text(getString(R.string.diagnostics_loading), 12,
-                Color.rgb(105, 113, 128), Typeface.NORMAL);
-        diagnosticsSummary.setPadding(0, dp(3), 0, 0);
-        copy.addView(diagnosticsSummary, matchWrap());
-
-        TextView arrow = text("›", 28, Color.rgb(105, 113, 128), Typeface.NORMAL);
-        row.addView(arrow, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        card.addView(row, matchWrap());
-
-        card.addView(divider(), new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, dp(1)));
-        LinearLayout aboutRow = new LinearLayout(this);
-        aboutRow.setOrientation(LinearLayout.HORIZONTAL);
-        aboutRow.setGravity(Gravity.CENTER_VERTICAL);
-        aboutRow.setPadding(0, dp(10), 0, dp(10));
-        aboutRow.setClickable(true);
-        aboutRow.setFocusable(true);
-        aboutRow.setOnClickListener(view -> openAbout());
-        TextView aboutIcon = text("ⓘ", 20, Color.rgb(92, 64, 150), Typeface.BOLD);
-        aboutIcon.setGravity(Gravity.CENTER);
-        aboutIcon.setBackground(rounded(
-                Color.rgb(245, 238, 255), 14, Color.TRANSPARENT, 0));
-        aboutRow.addView(aboutIcon, new LinearLayout.LayoutParams(dp(46), dp(46)));
-        LinearLayout aboutCopy = new LinearLayout(this);
-        aboutCopy.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams aboutCopyParams = new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        aboutCopyParams.setMarginStart(dp(14));
-        aboutRow.addView(aboutCopy, aboutCopyParams);
-        aboutCopy.addView(text(getString(R.string.menu_about), 16,
-                Color.rgb(26, 35, 52), Typeface.BOLD), matchWrap());
-        aboutCopy.addView(text(getString(R.string.module_description), 12,
-                Color.rgb(105, 113, 128), Typeface.NORMAL), matchWrap());
-        aboutRow.addView(text("›", 28,
-                Color.rgb(105, 113, 128), Typeface.NORMAL));
-        card.addView(aboutRow, matchWrap());
-        return card;
-    }
-
     private TextView addHealthRow(
             LinearLayout parent,
             String label,
@@ -352,27 +287,120 @@ public final class MainActivity extends Activity {
     }
 
     private void showMainMenu(View anchor) {
-        PopupMenu menu = new PopupMenu(this, anchor);
-        menu.getMenu().add(0, 1, 0, getString(R.string.menu_live_diagnostics));
-        menu.getMenu().add(0, 2, 1, getString(R.string.menu_snapshot));
-        menu.getMenu().add(0, 3, 2, getString(R.string.menu_about));
-        menu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == 1) {
-                openDiagnostics();
-                return true;
-            }
-            if (item.getItemId() == 2) {
-                captureSnapshot("dashboard-menu");
-                Toast.makeText(this, R.string.toast_snapshot_saved, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            if (item.getItemId() == 3) {
-                openAbout();
-                return true;
-            }
-            return false;
-        });
-        menu.show();
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        FrameLayout overlay = new FrameLayout(this);
+        overlay.setPadding(dp(12), dp(48), dp(24), dp(36));
+        overlay.setOnClickListener(view -> dialog.dismiss());
+
+        LinearLayout panel = card();
+        panel.setPadding(dp(14), dp(16), dp(14), dp(14));
+        panel.setOnClickListener(view -> { });
+        panel.addView(text(getString(R.string.menu_cd), 22,
+                Color.rgb(26, 35, 52), Typeface.BOLD), matchWrap());
+        TextView subtitle = text(getString(R.string.menu_overlay_subtitle), 13,
+                Color.rgb(105, 113, 128), Typeface.NORMAL);
+        subtitle.setPadding(0, dp(3), 0, dp(10));
+        panel.addView(subtitle, matchWrap());
+
+        addOverlayMenuItem(panel, "◉", Color.rgb(71, 83, 160),
+                getString(R.string.menu_live_diagnostics),
+                getString(R.string.diagnostics_subtitle), () -> {
+                    dialog.dismiss();
+                    openDiagnostics();
+                });
+        addOverlayMenuItem(panel, "▣", Color.rgb(52, 111, 175),
+                getString(R.string.menu_snapshot),
+                getString(R.string.menu_snapshot_desc), () -> {
+                    dialog.dismiss();
+                    captureSnapshot("dashboard-menu");
+                    Toast.makeText(this, R.string.toast_snapshot_saved,
+                            Toast.LENGTH_SHORT).show();
+                });
+        addOverlayMenuItem(panel, "ⓘ", Color.rgb(104, 75, 165),
+                getString(R.string.menu_about),
+                getString(R.string.menu_about_desc), () -> {
+                    dialog.dismiss();
+                    openAbout();
+                });
+
+        Button close = new Button(this);
+        close.setAllCaps(false);
+        close.setText(R.string.menu_close);
+        close.setTextSize(14);
+        close.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        close.setTextColor(Color.rgb(67, 79, 146));
+        close.setBackground(rounded(Color.WHITE, 14,
+                Color.rgb(208, 214, 229), 1));
+        close.setOnClickListener(view -> dialog.dismiss());
+        LinearLayout.LayoutParams closeParams = matchWrap();
+        closeParams.topMargin = dp(8);
+        panel.addView(close, closeParams);
+
+        FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP | Gravity.START);
+        overlay.addView(panel, panelParams);
+        dialog.setContentView(overlay);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            window.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            WindowManager.LayoutParams attributes = window.getAttributes();
+            attributes.dimAmount = 0.5f;
+            window.setAttributes(attributes);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+    }
+
+    private void addOverlayMenuItem(
+            LinearLayout parent,
+            String symbol,
+            int accent,
+            String title,
+            String detail,
+            Runnable action) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(14), dp(10), dp(12), dp(10));
+        row.setMinimumHeight(dp(76));
+        row.setClickable(true);
+        row.setFocusable(true);
+        row.setBackground(rounded(Color.rgb(250, 251, 255), 17,
+                Color.rgb(228, 232, 240), 1));
+        row.setOnClickListener(view -> action.run());
+
+        TextView icon = text(symbol, 21, accent, Typeface.BOLD);
+        icon.setGravity(Gravity.CENTER);
+        icon.setBackground(rounded(Color.argb(20,
+                Color.red(accent), Color.green(accent), Color.blue(accent)),
+                13, Color.TRANSPARENT, 0));
+        row.addView(icon, new LinearLayout.LayoutParams(dp(44), dp(44)));
+
+        LinearLayout copy = new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        copyParams.setMarginStart(dp(14));
+        copy.addView(text(title, 15, Color.rgb(34, 43, 60), Typeface.BOLD), matchWrap());
+        TextView description = text(detail, 12,
+                Color.rgb(105, 113, 128), Typeface.NORMAL);
+        description.setPadding(0, dp(2), 0, 0);
+        copy.addView(description, matchWrap());
+        row.addView(copy, copyParams);
+        row.addView(text("›", 26, Color.rgb(105, 113, 128), Typeface.NORMAL));
+
+        LinearLayout.LayoutParams rowParams = matchWrap();
+        rowParams.bottomMargin = dp(8);
+        parent.addView(row, rowParams);
     }
 
     private void openDiagnostics() {
@@ -452,13 +480,6 @@ public final class MainActivity extends Activity {
         defaultHomeView.setText(shortHome(resolveDefaultHome()));
         defaultHomeView.setTextColor(Color.rgb(62, 72, 90));
 
-        try {
-            DiagnosticDatabase.Counts counts = database.counts();
-            diagnosticsSummary.setText(getString(R.string.diagnostics_summary,
-                    counts.total, counts.success, counts.failure));
-        } catch (Throwable throwable) {
-            diagnosticsSummary.setText(R.string.diagnostics_summary_error);
-        }
     }
 
     private void applyStatus(
@@ -619,7 +640,8 @@ public final class MainActivity extends Activity {
         if (home.startsWith("ginlemon.flowerfree")) {
             return "Smart Launcher";
         }
-        if (home.startsWith("com.mi.android.globallauncher")) {
+        if (home.startsWith("com.mi.android.globallauncher")
+                || home.startsWith("com.miui.home")) {
             return "Xiaomi Launcher";
         }
         int slash = home.indexOf('/');

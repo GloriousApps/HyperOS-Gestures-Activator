@@ -1,5 +1,15 @@
 # Değişiklik günlüğü
 
+## 1.1.0 — 2026-09-10
+
+- Çin ROM Xiaomi Launcher paketi `com.miui.home` için LSPosed kapsamı ve hook
+  desteği eklendi.
+- Global/POCO Launcher (`com.mi.android.globallauncher`) desteği korunurken iki resmi
+  Xiaomi Launcher paketinden gelen tanılama olayları güvenli biçimde kabul ediliyor.
+- Ana sayfadaki yinelenen Sistem Araçları kartı kaldırıldı; Live Diagnostics, anlık
+  kayıt ve Hakkında seçenekleri MTZ Studio tarzı üst menüde birleştirildi.
+- Üç noktalı düğme, sol üstte üç çizgili menü simgesi ve kart tabanlı menüyle değiştirildi.
+
 ## 1.0.0 — 2026-09-02
 
 - Üçüncü taraf HOME kullanılırken alt kenarda iki yönlü hızlı uygulama geçişi eklendi.

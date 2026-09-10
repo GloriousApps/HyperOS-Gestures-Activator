@@ -6,4 +6,5 @@
     <string name="diagnostics_subtitle">सिस्टम घटनाएँ और संचालन इतिहास</string><string name="filter_all">सभी</string><string name="filter_success">सफल</string><string name="filter_failure">विफल</string><string name="filter_info">जानकारी</string><string name="action_snapshot">स्नैपशॉट</string><string name="action_export">रिपोर्ट निर्यात करें</string><string name="action_clear">रिकॉर्ड साफ़ करें</string>
     <string name="about_title">परिचय</string><string name="about_version">संस्करण %1$s</string><string name="about_description">तृतीय-पक्ष लॉन्चर के साथ मूल HyperOS जेस्चर अनुभव, पारदर्शी निदान और सुरक्षित पुनर्प्राप्ति बहाल करता है।</string><string name="about_open_github">GitHub खोलें</string>
     <string name="gesture_quick_switch_title">ऐप बदलें</string><string name="gesture_quick_switch_desc">नीचे के किनारे पर बाएँ या दाएँ स्वाइप करें</string>
+    <string name="menu_overlay_subtitle">डायग्नोस्टिक्स और सिस्टम टूल</string><string name="menu_snapshot_desc">वर्तमान नेविगेशन और हुक स्थिति सहेजें</string><string name="menu_about_desc">संस्करण और प्रोजेक्ट लिंक देखें</string><string name="menu_close">बंद करें</string>
 </resources>

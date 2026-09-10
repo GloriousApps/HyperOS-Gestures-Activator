@@ -6,4 +6,5 @@
     <string name="diagnostics_subtitle">أحداث النظام وسجل العمليات</string><string name="filter_all">الكل</string><string name="filter_success">ناجح</string><string name="filter_failure">فاشل</string><string name="filter_info">معلومات</string><string name="action_snapshot">لقطة</string><string name="action_export">تصدير التقرير</string><string name="action_clear">مسح السجلات</string>
     <string name="about_title">حول</string><string name="about_version">الإصدار %1$s</string><string name="about_description">يعيد تجربة إيماءات HyperOS الأصلية مع مشغل خارجي، مع تشخيص واضح واستعادة آمنة.</string><string name="about_open_github">فتح GitHub</string>
     <string name="gesture_quick_switch_title">التبديل بين التطبيقات</string><string name="gesture_quick_switch_desc">اسحب يسارًا أو يمينًا بمحاذاة الحافة السفلية</string>
+    <string name="menu_overlay_subtitle">التشخيص وأدوات النظام</string><string name="menu_snapshot_desc">حفظ حالة التنقل والخطافات الحالية</string><string name="menu_about_desc">عرض تفاصيل الإصدار ورابط المشروع</string><string name="menu_close">إغلاق</string>
 </resources>

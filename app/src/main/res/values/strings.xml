@@ -9,6 +9,10 @@
     <string name="menu_live_diagnostics">Live Diagnostics</string>
     <string name="menu_snapshot">System snapshot</string>
     <string name="menu_about">About</string>
+    <string name="menu_overlay_subtitle">Diagnostics and system tools</string>
+    <string name="menu_snapshot_desc">Save the current navigation and hook state</string>
+    <string name="menu_about_desc">View version details and the project link</string>
+    <string name="menu_close">Close</string>
     <string name="section_system_health">System health</string>
     <string name="section_gestures">Gestures</string>
     <string name="section_system_tools">System tools</string>

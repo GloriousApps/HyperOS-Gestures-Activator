@@ -6,4 +6,5 @@
     <string name="diagnostics_subtitle">システムイベントと操作履歴</string><string name="filter_all">すべて</string><string name="filter_success">成功</string><string name="filter_failure">失敗</string><string name="filter_info">情報</string><string name="action_snapshot">スナップショット</string><string name="action_export">レポートを書き出す</string><string name="action_clear">記録を消去</string>
     <string name="about_title">このアプリについて</string><string name="about_version">バージョン %1$s</string><string name="about_description">サードパーティ製ランチャーでも、透明な診断と安全な復元機能を備えたHyperOS純正ジェスチャー体験を復元します。</string><string name="about_open_github">GitHubを開く</string>
     <string name="gesture_quick_switch_title">アプリを切り替える</string><string name="gesture_quick_switch_desc">下端に沿って左右にスワイプ</string>
+    <string name="menu_overlay_subtitle">診断とシステムツール</string><string name="menu_snapshot_desc">現在のナビゲーションとフック状態を保存</string><string name="menu_about_desc">バージョン情報とプロジェクトリンクを表示</string><string name="menu_close">閉じる</string>
 </resources>
