@@ -90,38 +90,50 @@ public final class StatusDetailActivity extends Activity {
         try { navigation = Settings.Secure.getInt(getContentResolver(),
                 GestureActivation.KEY_NAVIGATION_MODE, -1); }
         catch (Exception ignored) { navigation = -1; }
-        addCard(root, "S", R.string.health_systemui,
-                systemUi ? R.string.health_ready : R.string.health_waiting, systemUi);
-        addCard(root, "L", R.string.health_launcher,
-                launcher ? R.string.health_ready : R.string.health_waiting, launcher);
+        addCard(root, "⚙", R.string.health_systemui,
+                systemUi ? R.string.health_ready : R.string.health_waiting, systemUi,
+                Color.rgb(0, 198, 211), Color.rgb(35, 111, 222));
+        addCard(root, "⌂", R.string.health_launcher,
+                launcher ? R.string.health_ready : R.string.health_waiting, launcher,
+                Color.rgb(111, 78, 232), Color.rgb(205, 74, 208));
         boolean navigationReady = fsg == 1 && navigation == 2;
-        addCard(root, "⌁", R.string.health_navigation,
+        addCard(root, "≋", R.string.health_navigation,
                 navigationReady ? R.string.health_gesture_mode : R.string.health_off,
-                navigationReady);
-        addCard(root, "⌂", R.string.health_default_home,
-                R.string.health_home_detected, true);
+                navigationReady, Color.rgb(30, 146, 238), Color.rgb(27, 202, 187));
+        addCard(root, "◆", R.string.health_default_home,
+                R.string.health_home_detected, true,
+                Color.rgb(242, 139, 51), Color.rgb(232, 71, 139));
     }
 
     private void addGestureContent(LinearLayout root) {
-        addCard(root, "‹", R.string.gesture_back_title, R.string.gesture_back_desc, true);
-        addCard(root, "↑", R.string.gesture_home_title, R.string.gesture_home_desc, true);
-        addCard(root, "▤", R.string.gesture_recents_title, R.string.gesture_recents_desc, true);
-        addCard(root, "↔", R.string.gesture_quick_switch_title,
-                R.string.gesture_quick_switch_desc, true);
+        addCard(root, "‹", R.string.gesture_back_title, R.string.gesture_back_desc, true,
+                Color.rgb(0, 190, 218), Color.rgb(46, 106, 224));
+        addCard(root, "↑", R.string.gesture_home_title, R.string.gesture_home_desc, true,
+                Color.rgb(91, 89, 238), Color.rgb(178, 72, 226));
+        addCard(root, "▤", R.string.gesture_recents_title, R.string.gesture_recents_desc, true,
+                Color.rgb(230, 71, 154), Color.rgb(247, 112, 83));
+        addCard(root, "⇄", R.string.gesture_quick_switch_title,
+                R.string.gesture_quick_switch_desc, true,
+                Color.rgb(246, 154, 42), Color.rgb(228, 73, 117));
     }
 
     private void addCard(LinearLayout root, String symbol, int titleId, int detailId,
-            boolean ready) {
+            boolean ready, int accentStart, int accentEnd) {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding(dp(16), dp(16), dp(16), dp(16));
         card.setBackground(surface(20));
-        TextView icon = text(symbol, 25, Color.WHITE, Typeface.BOLD);
+        TextView icon = text(symbol, 28, Color.WHITE, Typeface.BOLD);
         icon.setGravity(Gravity.CENTER);
-        icon.setBackground(rounded(ready ? Color.rgb(0, 177, 190)
-                : Color.rgb(181, 122, 36), 16, Color.argb(120, 220, 240, 255), 1));
-        card.addView(icon, new LinearLayout.LayoutParams(dp(54), dp(54)));
+        int start = ready ? accentStart : Color.rgb(181, 122, 36);
+        int end = ready ? accentEnd : Color.rgb(145, 83, 42);
+        icon.setShadowLayer(dp(7), 0, dp(2), Color.argb(150, Color.red(end),
+                Color.green(end), Color.blue(end)));
+        icon.setBackground(gradient(new int[]{start, end}, 19,
+                Color.argb(180, 225, 239, 255), 1));
+        icon.setElevation(dp(5));
+        card.addView(icon, new LinearLayout.LayoutParams(dp(62), dp(62)));
         LinearLayout copy = new LinearLayout(this);
         copy.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
