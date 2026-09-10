@@ -114,4 +114,16 @@
     <string name="about_repository_url" translatable="false">github.com/GloriousTR/HyperOS-Gestures-Activator</string>
     <string name="about_open_github">Open GitHub</string>
     <string name="about_open_failed">No app is available to open the project page.</string>
+    <string name="authorization_title">Authorization status</string>
+    <string name="device_version_label">DEVICE &amp; VERSION</string>
+    <string name="root_manager_label">ROOT MANAGER</string>
+    <string name="root_active">Root active</string>
+    <string name="root_unavailable">Root manager unavailable</string>
+    <string name="not_detected">Not detected</string>
+    <string name="superuser_ready">Superuser access ready</string>
+    <string name="open_root_manager">Open root manager</string>
+    <string name="open_vector_lsposed">Open Vector / LSPosed</string>
+    <string name="manager_unavailable">Manager application is unavailable</string>
+    <string name="section_health_collapsed_desc">SystemUI, Xiaomi engine and navigation readiness</string>
+    <string name="section_gestures_collapsed_desc">Back, Home, Recents and app switching</string>
 </resources>

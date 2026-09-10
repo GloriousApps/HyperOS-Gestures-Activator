@@ -60,9 +60,10 @@ public final class MainActivity extends Activity {
     private TextView launcherHealth;
     private TextView navigationHealth;
     private TextView defaultHomeView;
-    private GestureHeroView gestureHero;
     private boolean aeroGlass;
     private boolean darkMode;
+    private boolean healthExpanded;
+    private boolean gesturesExpanded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,15 +119,11 @@ public final class MainActivity extends Activity {
 
         root.addView(buildTopBar(), matchWrap());
         root.addView(space(18));
-        root.addView(buildStatusCard(), matchWrap());
+        root.addView(buildAuthorizationCard(), matchWrap());
         root.addView(space(22));
-        root.addView(sectionTitle(getString(R.string.section_system_health)), matchWrap());
-        root.addView(space(10));
-        root.addView(buildHealthCard(), matchWrap());
-        root.addView(space(22));
-        root.addView(sectionTitle(getString(R.string.section_gestures)), matchWrap());
-        root.addView(space(10));
-        root.addView(buildGestureCard(), matchWrap());
+        root.addView(buildExpandableSection(true), matchWrap());
+        root.addView(space(12));
+        root.addView(buildExpandableSection(false), matchWrap());
         root.addView(space(22));
 
         TextView footer = text(
@@ -194,7 +191,7 @@ public final class MainActivity extends Activity {
         brandParams.setMarginEnd(dp(8));
         row.addView(brand, brandParams);
 
-        TextView style = text("✦", 18,
+        TextView style = text("◐", 20,
                 aeroGlass ? Color.rgb(101, 174, 255) : secondaryTextColor(), Typeface.BOLD);
         style.setGravity(Gravity.CENTER);
         style.setContentDescription(getString(R.string.menu_appearance));
@@ -206,33 +203,66 @@ public final class MainActivity extends Activity {
         return row;
     }
 
-    private View buildStatusCard() {
+    private View buildAuthorizationCard() {
         statusCard = new LinearLayout(this);
         statusCard.setOrientation(LinearLayout.VERTICAL);
         statusCard.setPadding(dp(20), dp(20), dp(20), dp(20));
         statusCard.setElevation(dp(aeroGlass ? 4 : 2));
 
-        gestureHero = new GestureHeroView(this, aeroGlass, darkMode);
-        statusCard.addView(gestureHero, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, dp(138)));
+        LinearLayout heading = new LinearLayout(this);
+        heading.setOrientation(LinearLayout.HORIZONTAL);
+        heading.setGravity(Gravity.CENTER_VERTICAL);
+        TextView shield = iconBadge("◆", Color.rgb(0, 189, 174), 54);
+        heading.addView(shield, new LinearLayout.LayoutParams(dp(54), dp(54)));
+        TextView headingTitle = text(getString(R.string.authorization_title), 21,
+                primaryTextColor(), Typeface.BOLD);
+        LinearLayout.LayoutParams headingTitleParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        headingTitleParams.setMarginStart(dp(14));
+        heading.addView(headingTitle, headingTitleParams);
+        TextView rootBadge = text(resolveRootManager() == null
+                        ? getString(R.string.root_unavailable) : getString(R.string.root_active),
+                12, Color.WHITE, Typeface.BOLD);
+        rootBadge.setGravity(Gravity.CENTER);
+        rootBadge.setPadding(dp(12), dp(7), dp(12), dp(7));
+        rootBadge.setBackground(rounded(Color.rgb(0, 151, 136), 30,
+                Color.TRANSPARENT, 0));
+        heading.addView(rootBadge, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, dp(38)));
+        statusCard.addView(heading, matchWrap());
+
+        LinearLayout facts = new LinearLayout(this);
+        facts.setOrientation(LinearLayout.HORIZONTAL);
+        facts.setPadding(0, dp(20), 0, dp(16));
+        facts.addView(buildFact(getString(R.string.device_version_label),
+                Build.MANUFACTURER + " " + Build.MODEL,
+                "HyperOS " + Build.DISPLAY), new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        String rootPackage = resolveRootManager();
+        facts.addView(buildFact(getString(R.string.root_manager_label),
+                rootPackage == null ? getString(R.string.not_detected) : rootManagerName(rootPackage),
+                rootPackage == null ? getString(R.string.root_unavailable)
+                        : getString(R.string.superuser_ready)), new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        statusCard.addView(facts, matchWrap());
 
         statusBadge = text(getString(R.string.status_label), 11,
                 Color.rgb(35, 85, 62), Typeface.BOLD);
         statusBadge.setLetterSpacing(0.12f);
-        statusBadge.setGravity(Gravity.CENTER);
+        statusBadge.setGravity(Gravity.START);
         statusBadge.setPadding(0, dp(2), 0, 0);
         statusCard.addView(statusBadge, matchWrap());
 
         statusTitle = text(getString(R.string.status_checking_title), 26,
                 Color.rgb(18, 46, 32), Typeface.BOLD);
         statusTitle.setPadding(0, dp(8), 0, 0);
-        statusTitle.setGravity(Gravity.CENTER);
+        statusTitle.setGravity(Gravity.START);
         statusCard.addView(statusTitle, matchWrap());
 
         statusDetail = text(getString(R.string.status_checking_desc), 14,
                 Color.rgb(62, 82, 70), Typeface.NORMAL);
         statusDetail.setPadding(0, dp(6), 0, dp(18));
-        statusDetail.setGravity(Gravity.CENTER);
+        statusDetail.setGravity(Gravity.START);
         statusCard.addView(statusDetail, matchWrap());
 
         primaryButton = new Button(this);
@@ -244,6 +274,16 @@ public final class MainActivity extends Activity {
                 setGestureActivation(!GestureActivation.isEnabled(this)));
         statusCard.addView(primaryButton, matchWrap());
 
+        LinearLayout managers = new LinearLayout(this);
+        managers.setOrientation(LinearLayout.HORIZONTAL);
+        managers.setPadding(0, dp(10), 0, 0);
+        String managerPackage = resolveRootManager();
+        addWeightedButton(managers, compactAction(getString(R.string.open_root_manager),
+                view -> openPackage(managerPackage)));
+        addWeightedButton(managers, compactAction(getString(R.string.open_vector_lsposed),
+                view -> openPackage(resolveHookManager())));
+        statusCard.addView(managers, matchWrap());
+
         TextView safety = text(
                 getString(R.string.safety_hint),
                 11,
@@ -253,6 +293,114 @@ public final class MainActivity extends Activity {
         safety.setPadding(0, dp(12), 0, 0);
         statusCard.addView(safety, matchWrap());
         return statusCard;
+    }
+
+    private View buildExpandableSection(boolean health) {
+        LinearLayout card = themedCard(dp(16));
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        header.setPadding(0, dp(2), 0, dp(2));
+        TextView icon = iconBadge(health ? "✓" : "↗",
+                health ? Color.rgb(0, 174, 188) : Color.rgb(124, 83, 225), 48);
+        header.addView(icon, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        LinearLayout copy = new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        copyParams.setMarginStart(dp(14));
+        copy.addView(text(getString(health ? R.string.section_system_health
+                : R.string.section_gestures), 18, primaryTextColor(), Typeface.BOLD), matchWrap());
+        copy.addView(text(getString(health ? R.string.section_health_collapsed_desc
+                : R.string.section_gestures_collapsed_desc), 12,
+                secondaryTextColor(), Typeface.NORMAL), matchWrap());
+        header.addView(copy, copyParams);
+        TextView arrow = text("⌄", 25, secondaryTextColor(), Typeface.BOLD);
+        arrow.setGravity(Gravity.CENTER);
+        header.addView(arrow, new LinearLayout.LayoutParams(dp(42), dp(48)));
+        card.addView(header, matchWrap());
+
+        View content = health ? buildHealthCard() : buildGestureCard();
+        boolean expanded = health ? healthExpanded : gesturesExpanded;
+        content.setVisibility(expanded ? View.VISIBLE : View.GONE);
+        arrow.setText(expanded ? "⌃" : "⌄");
+        View.OnClickListener toggle = view -> {
+            if (health) healthExpanded = !healthExpanded;
+            else gesturesExpanded = !gesturesExpanded;
+            boolean nowExpanded = health ? healthExpanded : gesturesExpanded;
+            content.setVisibility(nowExpanded ? View.VISIBLE : View.GONE);
+            arrow.setText(nowExpanded ? "⌃" : "⌄");
+        };
+        header.setClickable(true);
+        header.setFocusable(true);
+        header.setOnClickListener(toggle);
+        return card;
+    }
+
+    private View buildFact(String label, String primary, String secondary) {
+        LinearLayout fact = new LinearLayout(this);
+        fact.setOrientation(LinearLayout.VERTICAL);
+        fact.addView(text(label, 11, secondaryTextColor(), Typeface.BOLD), matchWrap());
+        fact.addView(text(primary, 18, primaryTextColor(), Typeface.NORMAL), matchWrap());
+        fact.addView(text(secondary, 13, aeroGlass ? Color.rgb(101, 174, 255) : secondaryTextColor(), Typeface.NORMAL), matchWrap());
+        return fact;
+    }
+
+    private Button compactAction(String label, View.OnClickListener listener) {
+        Button button = new Button(this);
+        button.setAllCaps(false);
+        button.setText(label);
+        button.setTextSize(12);
+        button.setTextColor(primaryTextColor());
+        button.setMinHeight(dp(44));
+        button.setPadding(dp(6), 0, dp(6), 0);
+        button.setBackground(surfaceDrawable(18));
+        button.setOnClickListener(listener);
+        return button;
+    }
+
+    private void addWeightedButton(LinearLayout row, Button button) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(46), 1f);
+        params.setMarginEnd(dp(6));
+        row.addView(button, params);
+    }
+
+    private String resolveRootManager() {
+        String[] candidates = {"me.yuki.folk", "com.topjohnwu.magisk", "me.weishu.kernelsu", "me.bmax.apatch"};
+        for (String candidate : candidates) {
+            if (getPackageManager().getLaunchIntentForPackage(candidate) != null) return candidate;
+        }
+        return null;
+    }
+
+    private String resolveHookManager() {
+        String[] candidates = {"org.matrix.vector.manager", "org.lsposed.manager"};
+        for (String candidate : candidates) {
+            if (getPackageManager().getLaunchIntentForPackage(candidate) != null) return candidate;
+        }
+        return null;
+    }
+
+    private String rootManagerName(String packageName) {
+        if ("me.yuki.folk".equals(packageName)) return "FolkPatch";
+        if ("com.topjohnwu.magisk".equals(packageName)) return "Magisk";
+        if ("me.weishu.kernelsu".equals(packageName)) return "KernelSU";
+        if ("me.bmax.apatch".equals(packageName)) return "APatch";
+        return packageName;
+    }
+
+    private void openPackage(String packageName) {
+        if (packageName == null) {
+            Toast.makeText(this, R.string.manager_unavailable, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent == null) {
+            Toast.makeText(this, R.string.manager_unavailable, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try { startActivity(intent); }
+        catch (Exception ignored) { Toast.makeText(this, R.string.manager_unavailable, Toast.LENGTH_SHORT).show(); }
     }
 
     private View buildHealthCard() {
@@ -404,14 +552,6 @@ public final class MainActivity extends Activity {
                     captureSnapshot("dashboard-menu");
                     Toast.makeText(this, R.string.toast_snapshot_saved,
                             Toast.LENGTH_SHORT).show();
-                });
-        addOverlayMenuItem(panel, "✦", Color.rgb(68, 137, 210),
-                getString(R.string.menu_appearance),
-                getString(aeroGlass
-                        ? R.string.style_aero_glass_desc
-                        : R.string.style_default_desc), () -> {
-                    dialog.dismiss();
-                    showAppearanceDialog();
                 });
         addOverlayMenuItem(panel, "ⓘ", Color.rgb(104, 75, 165),
                 getString(R.string.menu_about),
@@ -651,9 +791,6 @@ public final class MainActivity extends Activity {
                 this, GestureActivation.KEY_FORCE_FSG_NAV_BAR, 0);
         int navigationMode = readSecureInt(GestureActivation.KEY_NAVIGATION_MODE, -1);
         boolean fullyActive = enabled && forceFsg == 1 && navigationMode == 2;
-        if (gestureHero != null) {
-            gestureHero.setActive(fullyActive);
-        }
 
         if (!permissionGranted) {
             applyStatus(
