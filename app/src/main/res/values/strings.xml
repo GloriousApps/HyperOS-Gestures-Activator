@@ -86,6 +86,7 @@
     <string name="diagnostics_subtitle">System events and operation history</string>
     <string name="back_cd">Back</string>
     <string name="live_monitoring">● LIVE — monitoring events</string>
+    <string name="live_ready">● Ready</string>
     <string name="live_paused">● PAUSED</string>
     <string name="live_database_error">● ERROR — diagnostics database could not be read</string>
     <string name="live_exporting">● PREPARING REPORT</string>
@@ -143,4 +144,18 @@
     <string name="health_page_desc">Live readiness of the components that provide native HyperOS navigation.</string>
     <string name="gestures_page_desc">Gestures available through the active HyperOS system navigation pipeline.</string>
     <string name="health_home_detected">Default launcher detected</string>
+    <string name="live_system_diagnostics_title">Live System Diagnostics</string>
+    <string name="live_system_diagnostics_desc">Private event stream stored on your device</string>
+    <string name="diagnostics_tools_title">Diagnostics tools</string>
+    <string name="diagnostics_export_tool_desc">Create a detailed report containing recent operations and technical results.</string>
+    <string name="diagnostics_snapshot_tool_desc">Record the current navigation, launcher and hook status.</string>
+    <string name="diagnostics_clear_tool_desc">Remove locally stored diagnostic records.</string>
+    <string name="telegram_report_title">Report a problem on Telegram</string>
+    <string name="telegram_report_desc">Export the report first, then send it to @glorioustr with your message.</string>
+    <string name="action_open">Open</string>
+    <string name="contact_telegram_title">Contact</string>
+    <string name="contact_telegram_desc">Questions, feedback and diagnostics support</string>
+    <string name="contact_telegram_handle" translatable="false">@glorioustr</string>
+    <string name="open_telegram">Open Telegram</string>
+    <string name="telegram_open_failed">Telegram or a web browser could not be opened.</string>
 </resources>

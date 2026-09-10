@@ -123,14 +123,14 @@ public final class StatusDetailActivity extends Activity {
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding(dp(16), dp(16), dp(16), dp(16));
-        card.setBackground(surface(20));
+        card.setBackground(surface(15));
         TextView icon = text(symbol, 28, Color.WHITE, Typeface.BOLD);
         icon.setGravity(Gravity.CENTER);
         int start = ready ? accentStart : Color.rgb(181, 122, 36);
         int end = ready ? accentEnd : Color.rgb(145, 83, 42);
         icon.setShadowLayer(dp(7), 0, dp(2), Color.argb(150, Color.red(end),
                 Color.green(end), Color.blue(end)));
-        icon.setBackground(gradient(new int[]{start, end}, 19,
+        icon.setBackground(gradient(new int[]{start, end}, 14,
                 Color.argb(180, 225, 239, 255), 1));
         icon.setElevation(dp(5));
         card.addView(icon, new LinearLayout.LayoutParams(dp(62), dp(62)));

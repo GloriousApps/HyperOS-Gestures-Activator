@@ -23,6 +23,7 @@ import android.widget.Toast;
 public final class AboutActivity extends Activity {
     private static final String PROJECT_URL =
             "https://github.com/GloriousTR/HyperOS-Gestures-Activator";
+    private static final String TELEGRAM_URL = "https://t.me/glorioustr";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,8 @@ public final class AboutActivity extends Activity {
         root.addView(buildFeatureCard(), matchWrap());
         root.addView(space(16));
         root.addView(buildRepositoryCard(), matchWrap());
+        root.addView(space(16));
+        root.addView(buildContactCard(), matchWrap());
         return scroll;
     }
 
@@ -92,7 +95,7 @@ public final class AboutActivity extends Activity {
         LinearLayout card = card();
         card.setGravity(Gravity.CENTER_HORIZONTAL);
         card.setPadding(dp(20), dp(22), dp(20), dp(24));
-        card.setBackground(rounded(Color.rgb(2, 3, 17), 26,
+        card.setBackground(rounded(Color.rgb(2, 3, 17), 18,
                 Color.rgb(30, 68, 150), 1));
 
         ImageView logo = new ImageView(this);
@@ -205,6 +208,46 @@ public final class AboutActivity extends Activity {
         return card;
     }
 
+    private View buildContactCard() {
+        LinearLayout card = card();
+        LinearLayout heading = new LinearLayout(this);
+        heading.setOrientation(LinearLayout.HORIZONTAL);
+        heading.setGravity(Gravity.CENTER_VERTICAL);
+        TextView icon = text("➤", 24, Color.WHITE, Typeface.BOLD);
+        icon.setGravity(Gravity.CENTER);
+        icon.setBackground(rounded(Color.rgb(0, 151, 178), 15,
+                Color.rgb(93, 213, 230), 1));
+        heading.addView(icon, new LinearLayout.LayoutParams(dp(50), dp(50)));
+        LinearLayout copy = new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        copyParams.setMarginStart(dp(14));
+        copy.addView(text(getString(R.string.contact_telegram_title), 17,
+                Color.rgb(26, 35, 52), Typeface.BOLD), matchWrap());
+        copy.addView(text(getString(R.string.contact_telegram_handle), 14,
+                Color.rgb(0, 130, 164), Typeface.BOLD), matchWrap());
+        TextView description = text(getString(R.string.contact_telegram_desc), 12,
+                Color.rgb(96, 105, 121), Typeface.NORMAL);
+        description.setPadding(0, dp(3), 0, 0);
+        copy.addView(description, matchWrap());
+        heading.addView(copy, copyParams);
+        card.addView(heading, matchWrap());
+        Button open = new Button(this);
+        open.setAllCaps(false);
+        open.setText(R.string.open_telegram);
+        open.setTextColor(Color.WHITE);
+        open.setTextSize(14);
+        open.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        open.setBackground(rounded(Color.rgb(0, 151, 178), 14,
+                Color.TRANSPARENT, 0));
+        open.setOnClickListener(view -> openTelegram());
+        LinearLayout.LayoutParams openParams = matchWrap();
+        openParams.topMargin = dp(14);
+        card.addView(open, openParams);
+        return card;
+    }
+
     private void openProject() {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(PROJECT_URL)));
@@ -213,12 +256,25 @@ public final class AboutActivity extends Activity {
         }
     }
 
+    private void openTelegram() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("tg://resolve?domain=glorioustr")));
+        } catch (ActivityNotFoundException ignored) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(TELEGRAM_URL)));
+            } catch (ActivityNotFoundException unavailable) {
+                Toast.makeText(this, R.string.telegram_open_failed, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private LinearLayout card() {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(dp(18), dp(8), dp(18), dp(8));
         card.setBackground(rounded(
-                Color.WHITE, 20, Color.rgb(225, 230, 238), 1));
+                Color.WHITE, 15, Color.rgb(225, 230, 238), 1));
         card.setElevation(dp(1));
         return card;
     }

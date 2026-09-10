@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -59,11 +61,23 @@ public final class DiagnosticsActivity extends Activity {
     private String activeFilter;
     private long renderedTotal = -1L;
     private String renderedFilter;
+    private boolean darkMode;
+    private boolean amoledMode;
+    private boolean aeroGlass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = DiagnosticDatabase.get(this);
+        SharedPreferences preferences = getSharedPreferences("ui_preferences", MODE_PRIVATE);
+        String colorMode = preferences.getString("color_mode", "SYSTEM");
+        boolean systemDark = (getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        amoledMode = "AMOLED".equals(colorMode);
+        darkMode = amoledMode || "DARK".equals(colorMode)
+                || ("SYSTEM".equals(colorMode) && systemDark);
+        aeroGlass = "AERO_GLASS".equals(preferences.getString("content_style", "DEFAULT"));
+        applySystemChrome();
         setTitle(R.string.screen_title);
         setContentView(buildScreen());
         recordAppEvent(
@@ -77,7 +91,7 @@ public final class DiagnosticsActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        liveStateView.setText(R.string.live_monitoring);
+        liveStateView.setText(R.string.live_ready);
         liveStateView.setTextColor(Color.rgb(20, 125, 70));
         liveHandler.removeCallbacks(liveRefresh);
         liveHandler.post(liveRefresh);
@@ -94,7 +108,7 @@ public final class DiagnosticsActivity extends Activity {
     private View buildScreen() {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setBackgroundColor(Color.rgb(246, 248, 252));
+        root.setBackground(screenBackground());
         root.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             Insets bars = windowInsets.getInsets(WindowInsets.Type.systemBars());
             view.setPadding(
@@ -111,7 +125,7 @@ public final class DiagnosticsActivity extends Activity {
 
         TextView back = new TextView(this);
         back.setText("‹");
-        back.setTextColor(Color.rgb(42, 54, 74));
+        back.setTextColor(primaryTextColor());
         back.setTextSize(34);
         back.setGravity(Gravity.CENTER);
         back.setContentDescription(getString(R.string.back_cd));
@@ -120,47 +134,69 @@ public final class DiagnosticsActivity extends Activity {
         back.setOnClickListener(view -> finish());
         topBar.addView(back, new LinearLayout.LayoutParams(dp(44), dp(48)));
 
-        LinearLayout titles = new LinearLayout(this);
-        titles.setOrientation(LinearLayout.VERTICAL);
         TextView title = new TextView(this);
         title.setText(R.string.diagnostics_title);
-        title.setTextColor(Color.rgb(29, 35, 48));
+        title.setTextColor(primaryTextColor());
         title.setTextSize(23);
-        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        titles.addView(title, matchWrap());
-        TextView subtitle = new TextView(this);
-        subtitle.setText(R.string.diagnostics_subtitle);
-        subtitle.setTextColor(Color.rgb(105, 113, 128));
-        subtitle.setTextSize(12);
-        titles.addView(subtitle, matchWrap());
+        title.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams titlesParams = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         titlesParams.setMarginStart(dp(8));
-        topBar.addView(titles, titlesParams);
+        topBar.addView(title, titlesParams);
+        topBar.addView(new View(this), new LinearLayout.LayoutParams(dp(44), dp(48)));
         root.addView(topBar, matchWrap());
 
-        liveStateView = new TextView(this);
-        liveStateView.setTextSize(14);
-        liveStateView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        liveStateView.setPadding(dp(52), dp(6), 0, dp(14));
-        root.addView(liveStateView, matchWrap());
+        LinearLayout liveCard = new LinearLayout(this);
+        liveCard.setOrientation(LinearLayout.VERTICAL);
+        liveCard.setPadding(dp(16), dp(16), dp(16), dp(16));
+        liveCard.setBackground(surfaceDrawable(16));
+        LinearLayout liveHeader = new LinearLayout(this);
+        liveHeader.setOrientation(LinearLayout.HORIZONTAL);
+        liveHeader.setGravity(Gravity.CENTER_VERTICAL);
+        TextView pulse = new TextView(this);
+        pulse.setText("▰");
+        pulse.setTextSize(22);
+        pulse.setTextColor(Color.rgb(0, 214, 230));
+        pulse.setGravity(Gravity.CENTER);
+        pulse.setBackground(rounded(Color.rgb(19, 78, 101), 15,
+                Color.argb(100, 98, 216, 255), 1));
+        liveHeader.addView(pulse, new LinearLayout.LayoutParams(dp(52), dp(52)));
+        LinearLayout liveTitles = new LinearLayout(this);
+        liveTitles.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams liveTitleParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        liveTitleParams.setMarginStart(dp(14));
+        liveTitles.addView(label(R.string.live_system_diagnostics_title, 20,
+                primaryTextColor(), Typeface.BOLD), matchWrap());
+        liveTitles.addView(label(R.string.live_system_diagnostics_desc, 12,
+                secondaryTextColor(), Typeface.NORMAL), matchWrap());
+        liveHeader.addView(liveTitles, liveTitleParams);
+        liveStateView = label(R.string.live_monitoring, 12,
+                Color.rgb(0, 203, 219), Typeface.BOLD);
+        liveStateView.setGravity(Gravity.CENTER);
+        liveStateView.setPadding(dp(12), dp(6), dp(12), dp(6));
+        liveStateView.setBackground(rounded(Color.rgb(27, 76, 99), 24,
+                Color.TRANSPARENT, 0));
+        liveHeader.addView(liveStateView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, dp(38)));
+        liveCard.addView(liveHeader, matchWrap());
 
         summaryView = new TextView(this);
-        summaryView.setTextColor(Color.rgb(73, 69, 79));
-        summaryView.setTextSize(14);
-        summaryView.setPadding(0, 0, 0, dp(8));
-        root.addView(summaryView, matchWrap());
+        summaryView.setTextColor(secondaryTextColor());
+        summaryView.setTextSize(12);
+        summaryView.setPadding(0, dp(10), 0, dp(5));
+        liveCard.addView(summaryView, matchWrap());
 
         filterView = new TextView(this);
         filterView.setText(getString(
                 R.string.diagnostics_showing, getString(R.string.filter_all)));
-        filterView.setTextColor(Color.rgb(73, 69, 79));
-        filterView.setTextSize(12);
-        root.addView(filterView, matchWrap());
+        filterView.setTextColor(secondaryTextColor());
+        filterView.setTextSize(10);
+        liveCard.addView(filterView, matchWrap());
 
         LinearLayout controls = new LinearLayout(this);
         controls.setOrientation(LinearLayout.VERTICAL);
-        controls.setPadding(0, dp(6), 0, dp(8));
+        controls.setPadding(0, dp(5), 0, dp(8));
 
         LinearLayout filters = new LinearLayout(this);
         filters.setOrientation(LinearLayout.HORIZONTAL);
@@ -174,21 +210,7 @@ public final class DiagnosticsActivity extends Activity {
                 getString(R.string.filter_info), DiagnosticEvent.STATUS_INFO));
         controls.addView(filters, matchWrap());
 
-        LinearLayout actions = new LinearLayout(this);
-        actions.setOrientation(LinearLayout.HORIZONTAL);
-        addWeightedButton(actions,
-                actionButton(getString(R.string.action_snapshot),
-                        view -> captureAppSnapshot("manual-refresh")));
-        addWeightedButton(actions,
-                actionButton(getString(R.string.action_export),
-                        view -> chooseReportDestination()));
-        controls.addView(actions, matchWrap());
-
-        Button clearButton = actionButton(
-                getString(R.string.action_clear), view -> confirmClear());
-        clearButton.setTextColor(Color.rgb(160, 48, 48));
-        controls.addView(clearButton, matchWrap());
-        root.addView(controls, matchWrap());
+        liveCard.addView(controls, matchWrap());
 
         eventList = new ListView(this);
         eventList.setAdapter(eventAdapter);
@@ -196,17 +218,150 @@ public final class DiagnosticsActivity extends Activity {
         eventList.setClipToPadding(false);
         eventList.setPadding(0, dp(4), 0, dp(8));
         eventList.setBackgroundColor(Color.TRANSPARENT);
-        root.addView(eventList, new LinearLayout.LayoutParams(
+        eventList.setBackground(rounded(Color.rgb(8, 13, 24), 12,
+                Color.rgb(35, 45, 63), 1));
+        liveCard.addView(eventList, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                0,
-                1f));
+                dp(300)));
+        LinearLayout.LayoutParams liveParams = matchWrap();
+        liveParams.topMargin = dp(14);
+        root.addView(liveCard, liveParams);
 
-        TextView footer = new TextView(this);
-        footer.setText(R.string.diagnostics_footer);
-        footer.setTextColor(Color.rgb(121, 116, 126));
-        footer.setTextSize(11);
-        root.addView(footer, matchWrap());
+        TextView toolsTitle = label(R.string.diagnostics_tools_title, 18,
+                primaryTextColor(), Typeface.BOLD);
+        toolsTitle.setPadding(0, dp(16), 0, dp(8));
+        root.addView(toolsTitle, matchWrap());
+        root.addView(toolRow("▣", Color.rgb(45, 112, 224),
+                R.string.action_export, R.string.diagnostics_export_tool_desc,
+                view -> chooseReportDestination()), matchWrap());
+        root.addView(toolRow("◎", Color.rgb(116, 82, 225),
+                R.string.action_snapshot, R.string.diagnostics_snapshot_tool_desc,
+                view -> captureAppSnapshot("manual-refresh")), matchWrap());
+        root.addView(toolRow("⌫", Color.rgb(204, 72, 92),
+                R.string.action_clear, R.string.diagnostics_clear_tool_desc,
+                view -> confirmClear()), matchWrap());
+        root.addView(toolRow("➤", Color.rgb(0, 171, 193),
+                R.string.telegram_report_title, R.string.telegram_report_desc,
+                view -> openTelegram()), matchWrap());
         return root;
+    }
+
+    private View toolRow(String symbol, int accent, int titleId, int descriptionId,
+            View.OnClickListener listener) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(14), dp(11), dp(10), dp(11));
+        row.setBackground(surfaceDrawable(14));
+        TextView icon = label(symbol, 23, Color.WHITE, Typeface.BOLD);
+        icon.setGravity(Gravity.CENTER);
+        icon.setBackground(rounded(darken(accent, 0.28f), 14,
+                Color.argb(95, 210, 235, 255), 1));
+        row.addView(icon, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        LinearLayout copy = new LinearLayout(this);
+        copy.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        copyParams.setMarginStart(dp(13));
+        copy.addView(label(titleId, 15, primaryTextColor(), Typeface.BOLD), matchWrap());
+        copy.addView(label(descriptionId, 11, secondaryTextColor(), Typeface.NORMAL), matchWrap());
+        row.addView(copy, copyParams);
+        Button open = actionButton(getString(R.string.action_open), listener);
+        open.setTextColor(darkMode ? Color.rgb(29, 47, 71) : Color.rgb(35, 61, 91));
+        open.setBackground(rounded(Color.rgb(174, 211, 255), 22,
+                Color.TRANSPARENT, 0));
+        row.addView(open, new LinearLayout.LayoutParams(dp(72), dp(42)));
+        row.setClickable(true);
+        row.setFocusable(true);
+        row.setOnClickListener(listener);
+        LinearLayout.LayoutParams params = matchWrap();
+        params.bottomMargin = dp(8);
+        row.setLayoutParams(params);
+        return row;
+    }
+
+    private TextView label(int stringId, int size, int color, int style) {
+        return label(getString(stringId), size, color, style);
+    }
+
+    private TextView label(String value, int size, int color, int style) {
+        TextView view = new TextView(this);
+        view.setText(value);
+        view.setTextSize(size);
+        view.setTextColor(color);
+        view.setTypeface(Typeface.DEFAULT, style);
+        return view;
+    }
+
+    private void openTelegram() {
+        Intent telegram = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("tg://resolve?domain=glorioustr"));
+        try {
+            startActivity(telegram);
+        } catch (Throwable ignored) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://t.me/glorioustr")));
+            } catch (Throwable unavailable) {
+                Toast.makeText(this, R.string.telegram_open_failed, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void applySystemChrome() {
+        int background = amoledMode ? Color.BLACK
+                : darkMode ? Color.rgb(7, 17, 32) : Color.rgb(240, 246, 253);
+        getWindow().setStatusBarColor(background);
+        getWindow().setNavigationBarColor(background);
+        int flags = getWindow().getDecorView().getSystemUiVisibility();
+        if (darkMode) flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        else flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+    }
+
+    private GradientDrawable screenBackground() {
+        if (amoledMode) return rounded(Color.BLACK, 0, Color.TRANSPARENT, 0);
+        if (aeroGlass) return darkMode
+                ? gradient(new int[]{Color.rgb(7, 18, 34), Color.rgb(22, 40, 69),
+                        Color.rgb(42, 29, 65)}, 0, Color.TRANSPARENT, 0)
+                : gradient(new int[]{Color.rgb(231, 246, 255), Color.rgb(244, 237, 255),
+                        Color.rgb(222, 235, 255)}, 0, Color.TRANSPARENT, 0);
+        return rounded(darkMode ? Color.rgb(15, 14, 20) : Color.rgb(246, 248, 252),
+                0, Color.TRANSPARENT, 0);
+    }
+
+    private GradientDrawable surfaceDrawable(int radius) {
+        if (amoledMode) return rounded(Color.rgb(8, 9, 13), radius,
+                Color.rgb(73, 81, 99), 1);
+        if (aeroGlass) return darkMode
+                ? gradient(new int[]{Color.rgb(29, 55, 78), Color.rgb(54, 48, 70),
+                        Color.rgb(37, 48, 67)}, radius, Color.rgb(148, 169, 199), 1)
+                : gradient(new int[]{Color.rgb(214, 229, 240), Color.rgb(229, 222, 239)},
+                        radius, Color.rgb(142, 164, 194), 1);
+        return rounded(darkMode ? Color.rgb(43, 43, 52) : Color.WHITE, radius,
+                darkMode ? Color.rgb(93, 99, 115) : Color.rgb(220, 226, 237), 1);
+    }
+
+    private GradientDrawable gradient(int[] colors, int radius, int stroke, int width) {
+        GradientDrawable drawable = new GradientDrawable(
+                GradientDrawable.Orientation.TL_BR, colors);
+        drawable.setCornerRadius(dp(radius));
+        if (width > 0) drawable.setStroke(dp(width), stroke);
+        return drawable;
+    }
+
+    private int primaryTextColor() {
+        return darkMode ? Color.rgb(245, 241, 250) : Color.rgb(26, 35, 52);
+    }
+
+    private int secondaryTextColor() {
+        return darkMode ? Color.rgb(199, 196, 211) : Color.rgb(100, 109, 126);
+    }
+
+    private int darken(int color, float amount) {
+        return Color.rgb(Math.round(Color.red(color) * (1f - amount)),
+                Math.round(Color.green(color) * (1f - amount)),
+                Math.round(Color.blue(color) * (1f - amount)));
     }
 
     @Override
@@ -239,10 +394,10 @@ public final class DiagnosticsActivity extends Activity {
         button.setText(label);
         button.setAllCaps(false);
         button.setTextSize(12);
-        button.setTextColor(Color.rgb(52, 64, 92));
+        button.setTextColor(primaryTextColor());
         button.setMinHeight(dp(44));
-        button.setBackground(rounded(
-                Color.WHITE, 12, Color.rgb(221, 226, 236), 1));
+        button.setBackground(rounded(darkMode ? Color.rgb(43, 48, 61) : Color.WHITE,
+                12, darkMode ? Color.rgb(82, 92, 112) : Color.rgb(221, 226, 236), 1));
         button.setOnClickListener(listener);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -565,7 +720,7 @@ public final class DiagnosticsActivity extends Activity {
             container.addView(header, matchWrap());
 
             TextView detail = new TextView(DiagnosticsActivity.this);
-            detail.setTextColor(Color.rgb(73, 69, 79));
+            detail.setTextColor(Color.rgb(194, 202, 218));
             detail.setTextSize(12);
             detail.setTypeface(Typeface.MONOSPACE);
             detail.setTextIsSelectable(true);
@@ -573,7 +728,7 @@ public final class DiagnosticsActivity extends Activity {
             container.addView(detail, matchWrap());
 
             TextView source = new TextView(DiagnosticsActivity.this);
-            source.setTextColor(Color.rgb(121, 116, 126));
+            source.setTextColor(Color.rgb(124, 137, 159));
             source.setTextSize(10);
             source.setGravity(Gravity.END);
             source.setPadding(0, dp(5), 0, 0);
@@ -582,21 +737,16 @@ public final class DiagnosticsActivity extends Activity {
         }
 
         private void bindEventRow(EventRow row, DiagnosticEvent event) {
-            int background;
             int accent;
             if (DiagnosticEvent.STATUS_SUCCESS.equals(event.status)) {
-                background = Color.rgb(229, 246, 235);
-                accent = Color.rgb(20, 105, 60);
+                accent = Color.rgb(61, 224, 161);
             } else if (DiagnosticEvent.STATUS_FAILURE.equals(event.status)) {
-                background = Color.rgb(255, 232, 230);
-                accent = Color.rgb(186, 26, 26);
+                accent = Color.rgb(255, 111, 121);
             } else {
-                background = Color.rgb(232, 238, 255);
-                accent = Color.rgb(47, 67, 130);
+                accent = Color.rgb(89, 190, 255);
             }
-            row.container.setBackground(rounded(background, 14,
-                    Color.argb(28, Color.red(accent), Color.green(accent), Color.blue(accent)),
-                    1));
+            row.container.setBackground(rounded(Color.rgb(8, 13, 24), 0,
+                    Color.TRANSPARENT, 0));
             row.header.setTextColor(accent);
             row.header.setText(timeFormat.format(new Date(event.timestamp))
                     + "  " + event.status

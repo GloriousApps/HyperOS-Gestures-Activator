@@ -79,6 +79,7 @@
     <string name="diagnostics_subtitle">Sistem olayları ve işlem geçmişi</string>
     <string name="back_cd">Geri</string>
     <string name="live_monitoring">● CANLI — olaylar izleniyor</string>
+    <string name="live_ready">● Hazır</string>
     <string name="live_paused">● DURAKLATILDI</string>
     <string name="live_database_error">● HATA — tanılama veritabanı okunamadı</string>
     <string name="live_exporting">● RAPOR HAZIRLANIYOR</string>
@@ -135,4 +136,18 @@
     <string name="health_page_desc">Yerel HyperOS gezinmesini sağlayan bileşenlerin canlı çalışma durumu.</string>
     <string name="gestures_page_desc">Etkin HyperOS sistem gezinme hattı üzerinden kullanılabilen hareketler.</string>
     <string name="health_home_detected">Varsayılan başlatıcı algılandı</string>
+    <string name="live_system_diagnostics_title">Canlı Sistem Tanılama</string>
+    <string name="live_system_diagnostics_desc">Cihazda tutulan özel olay akışı</string>
+    <string name="diagnostics_tools_title">Tanılama araçları</string>
+    <string name="diagnostics_export_tool_desc">Son işlemleri ve teknik sonuçları içeren ayrıntılı bir rapor oluşturur.</string>
+    <string name="diagnostics_snapshot_tool_desc">Geçerli gezinme, başlatıcı ve hook durumunu kaydeder.</string>
+    <string name="diagnostics_clear_tool_desc">Cihazda tutulan tanılama kayıtlarını temizler.</string>
+    <string name="telegram_report_title">Telegram’dan sorun bildir</string>
+    <string name="telegram_report_desc">Önce raporu dışa aktarın, ardından mesajınızla birlikte @glorioustr’a gönderin.</string>
+    <string name="action_open">Aç</string>
+    <string name="contact_telegram_title">İletişim</string>
+    <string name="contact_telegram_desc">Sorular, geri bildirim ve tanılama desteği</string>
+    <string name="contact_telegram_handle" translatable="false">@glorioustr</string>
+    <string name="open_telegram">Telegram’ı aç</string>
+    <string name="telegram_open_failed">Telegram veya bir web tarayıcısı açılamadı.</string>
 </resources>

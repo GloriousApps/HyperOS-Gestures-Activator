@@ -293,8 +293,10 @@ public final class MainActivity extends Activity {
                 setGestureActivation(!GestureActivation.isEnabled(this)));
         navigationRow.addView(primaryButton, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, dp(44)));
-        statusCard.addView(navigationRow, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams navigationParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        navigationParams.gravity = Gravity.CENTER_HORIZONTAL;
+        statusCard.addView(navigationRow, navigationParams);
 
         statusDetail = text(getString(R.string.status_checking_desc), 14,
                 Color.rgb(62, 82, 70), Typeface.NORMAL);
@@ -1059,15 +1061,15 @@ public final class MainActivity extends Activity {
                             Color.rgb(34, 44, 61)}
                     : new int[]{Color.rgb(208, 220, 232), Color.rgb(216, 216, 229),
                             Color.rgb(210, 218, 231)};
-            statusCard.setBackground(gradient(colors, 24,
+            statusCard.setBackground(gradient(colors, 18,
                     Color.argb(darkMode ? 150 : 120, Color.red(accent),
                             Color.green(accent), Color.blue(accent)), 1));
         } else if (darkMode) {
-            statusCard.setBackground(rounded(Color.rgb(56, 54, 62), 22,
+            statusCard.setBackground(rounded(Color.rgb(56, 54, 62), 18,
                     Color.argb(100, Color.red(accent), Color.green(accent),
                             Color.blue(accent)), 1));
         } else {
-            statusCard.setBackground(rounded(background, 22,
+            statusCard.setBackground(rounded(background, 18,
                     Color.argb(35, Color.red(accent), Color.green(accent),
                             Color.blue(accent)), 1));
         }
@@ -1243,7 +1245,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(dp(16), dp(4), dp(16), dp(4));
-        card.setBackground(surfaceDrawable(18));
+        card.setBackground(surfaceDrawable(14));
         card.setElevation(dp(aeroGlass ? 3 : 1));
         return card;
     }
@@ -1252,7 +1254,7 @@ public final class MainActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(padding, padding, padding, padding);
-        card.setBackground(surfaceDrawable(20));
+        card.setBackground(surfaceDrawable(16));
         card.setElevation(dp(aeroGlass ? 3 : 1));
         return card;
     }
