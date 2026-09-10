@@ -3,6 +3,8 @@ package dev.glorioustr.hyperosgesturesactivator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Typeface;
@@ -24,10 +26,22 @@ public final class AboutActivity extends Activity {
     private static final String PROJECT_URL =
             "https://github.com/GloriousTR/HyperOS-Gestures-Activator";
     private static final String TELEGRAM_URL = "https://t.me/glorioustr";
+    private boolean darkMode;
+    private boolean amoledMode;
+    private boolean aeroGlass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences preferences = getSharedPreferences("ui_preferences", MODE_PRIVATE);
+        String colorMode = preferences.getString("color_mode", "SYSTEM");
+        boolean systemDark = (getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        amoledMode = "AMOLED".equals(colorMode);
+        darkMode = amoledMode || "DARK".equals(colorMode)
+                || ("SYSTEM".equals(colorMode) && systemDark);
+        aeroGlass = "AERO_GLASS".equals(preferences.getString("content_style", "DEFAULT"));
+        applySystemChrome();
         setTitle(R.string.about_title);
         setContentView(buildScreen());
         DiagnosticDatabase.get(this).insert(new DiagnosticEvent(
@@ -44,7 +58,7 @@ public final class AboutActivity extends Activity {
     private View buildScreen() {
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
-        scroll.setBackgroundColor(Color.rgb(246, 248, 252));
+        scroll.setBackground(screenBackground());
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -75,7 +89,7 @@ public final class AboutActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        TextView back = text("‹", 34, Color.rgb(42, 54, 74), Typeface.NORMAL);
+        TextView back = text("‹", 34, primaryTextColor(), Typeface.NORMAL);
         back.setGravity(Gravity.CENTER);
         back.setContentDescription(getString(R.string.back_cd));
         back.setClickable(true);
@@ -83,7 +97,7 @@ public final class AboutActivity extends Activity {
         back.setOnClickListener(view -> finish());
         row.addView(back, new LinearLayout.LayoutParams(dp(44), dp(48)));
         TextView title = text(getString(R.string.about_title), 24,
-                Color.rgb(25, 33, 48), Typeface.BOLD);
+                primaryTextColor(), Typeface.BOLD);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         params.setMarginStart(dp(8));
@@ -159,10 +173,12 @@ public final class AboutActivity extends Activity {
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.TOP);
         row.setPadding(0, dp(14), 0, dp(14));
-        TextView icon = text(symbol, 20, Color.rgb(67, 79, 146), Typeface.BOLD);
+        TextView icon = text(symbol, 20,
+                darkMode ? Color.rgb(167, 181, 255) : Color.rgb(67, 79, 146), Typeface.BOLD);
         icon.setGravity(Gravity.CENTER);
         icon.setBackground(rounded(
-                Color.rgb(239, 241, 255), 13, Color.TRANSPARENT, 0));
+                darkMode ? Color.rgb(47, 50, 72) : Color.rgb(239, 241, 255),
+                11, Color.TRANSPARENT, 0));
         row.addView(icon, new LinearLayout.LayoutParams(dp(44), dp(44)));
 
         LinearLayout copy = new LinearLayout(this);
@@ -172,9 +188,9 @@ public final class AboutActivity extends Activity {
         copyParams.setMarginStart(dp(14));
         row.addView(copy, copyParams);
         copy.addView(text(getString(titleId), 15,
-                Color.rgb(32, 41, 58), Typeface.BOLD), matchWrap());
+                primaryTextColor(), Typeface.BOLD), matchWrap());
         TextView description = text(getString(descriptionId), 12,
-                Color.rgb(96, 105, 121), Typeface.NORMAL);
+                secondaryTextColor(), Typeface.NORMAL);
         description.setPadding(0, dp(4), 0, 0);
         copy.addView(description, matchWrap());
         parent.addView(row, matchWrap());
@@ -183,14 +199,14 @@ public final class AboutActivity extends Activity {
     private View buildRepositoryCard() {
         LinearLayout card = card();
         TextView title = text(getString(R.string.about_repository_title), 17,
-                Color.rgb(26, 35, 52), Typeface.BOLD);
+                primaryTextColor(), Typeface.BOLD);
         card.addView(title, matchWrap());
         TextView description = text(getString(R.string.about_repository_desc), 13,
-                Color.rgb(96, 105, 121), Typeface.NORMAL);
+                secondaryTextColor(), Typeface.NORMAL);
         description.setPadding(0, dp(6), 0, 0);
         card.addView(description, matchWrap());
         TextView url = text(getString(R.string.about_repository_url), 11,
-                Color.rgb(71, 83, 160), Typeface.NORMAL);
+                darkMode ? Color.rgb(139, 177, 255) : Color.rgb(71, 83, 160), Typeface.NORMAL);
         url.setPadding(0, dp(12), 0, dp(12));
         url.setTextIsSelectable(true);
         card.addView(url, matchWrap());
@@ -224,11 +240,11 @@ public final class AboutActivity extends Activity {
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         copyParams.setMarginStart(dp(14));
         copy.addView(text(getString(R.string.contact_telegram_title), 17,
-                Color.rgb(26, 35, 52), Typeface.BOLD), matchWrap());
+                primaryTextColor(), Typeface.BOLD), matchWrap());
         copy.addView(text(getString(R.string.contact_telegram_handle), 14,
-                Color.rgb(0, 130, 164), Typeface.BOLD), matchWrap());
+                darkMode ? Color.rgb(73, 218, 235) : Color.rgb(0, 130, 164), Typeface.BOLD), matchWrap());
         TextView description = text(getString(R.string.contact_telegram_desc), 12,
-                Color.rgb(96, 105, 121), Typeface.NORMAL);
+                secondaryTextColor(), Typeface.NORMAL);
         description.setPadding(0, dp(3), 0, 0);
         copy.addView(description, matchWrap());
         heading.addView(copy, copyParams);
@@ -273,15 +289,15 @@ public final class AboutActivity extends Activity {
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(dp(18), dp(8), dp(18), dp(8));
-        card.setBackground(rounded(
-                Color.WHITE, 15, Color.rgb(225, 230, 238), 1));
+        card.setBackground(surfaceDrawable(15));
         card.setElevation(dp(1));
         return card;
     }
 
     private View divider() {
         View divider = new View(this);
-        divider.setBackgroundColor(Color.rgb(235, 238, 244));
+        divider.setBackgroundColor(darkMode
+                ? Color.rgb(68, 70, 82) : Color.rgb(235, 238, 244));
         return divider;
     }
 
@@ -308,6 +324,61 @@ public final class AboutActivity extends Activity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private void applySystemChrome() {
+        int background = amoledMode ? Color.BLACK
+                : darkMode ? Color.rgb(7, 17, 32) : Color.rgb(240, 246, 253);
+        getWindow().setStatusBarColor(background);
+        getWindow().setNavigationBarColor(background);
+        int flags = getWindow().getDecorView().getSystemUiVisibility();
+        if (darkMode) {
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        } else {
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        }
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+    }
+
+    private GradientDrawable screenBackground() {
+        if (amoledMode) return rounded(Color.BLACK, 0, Color.TRANSPARENT, 0);
+        if (aeroGlass) return darkMode
+                ? gradient(new int[]{Color.rgb(7, 18, 34), Color.rgb(22, 40, 69),
+                        Color.rgb(42, 29, 65)}, 0, Color.TRANSPARENT, 0)
+                : gradient(new int[]{Color.rgb(231, 246, 255), Color.rgb(244, 237, 255),
+                        Color.rgb(222, 235, 255)}, 0, Color.TRANSPARENT, 0);
+        return rounded(darkMode ? Color.rgb(15, 14, 20) : Color.rgb(246, 248, 252),
+                0, Color.TRANSPARENT, 0);
+    }
+
+    private GradientDrawable surfaceDrawable(int radius) {
+        if (amoledMode) return rounded(Color.rgb(8, 9, 13), radius,
+                Color.rgb(73, 81, 99), 1);
+        if (aeroGlass) return darkMode
+                ? gradient(new int[]{Color.rgb(29, 55, 78), Color.rgb(54, 48, 70),
+                        Color.rgb(37, 48, 67)}, radius, Color.rgb(148, 169, 199), 1)
+                : gradient(new int[]{Color.rgb(214, 229, 240), Color.rgb(229, 222, 239)},
+                        radius, Color.rgb(142, 164, 194), 1);
+        return rounded(darkMode ? Color.rgb(43, 43, 52) : Color.WHITE, radius,
+                darkMode ? Color.rgb(93, 99, 115) : Color.rgb(220, 226, 237), 1);
+    }
+
+    private GradientDrawable gradient(int[] colors, int radius, int stroke, int width) {
+        GradientDrawable drawable = new GradientDrawable(
+                GradientDrawable.Orientation.TL_BR, colors);
+        drawable.setCornerRadius(dp(radius));
+        if (width > 0) drawable.setStroke(dp(width), stroke);
+        return drawable;
+    }
+
+    private int primaryTextColor() {
+        return darkMode ? Color.rgb(245, 241, 250) : Color.rgb(26, 35, 52);
+    }
+
+    private int secondaryTextColor() {
+        return darkMode ? Color.rgb(199, 196, 211) : Color.rgb(100, 109, 126);
     }
 
     private GradientDrawable rounded(
